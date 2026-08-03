@@ -2,6 +2,10 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/pages/index.html"
+    },
+    {
       "source": "/nguyen-nhan",
       "destination": "/pages/category.html"
     },
