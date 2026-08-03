@@ -9,6 +9,7 @@ import { RollbackManager } from './utils/rollback.js';
 import { HtmlValidator } from './utils/html-validator.js';
 import { SecurityManager } from './utils/security.js';
 import { QAReportGenerator } from './utils/qa-report.js';
+import { GeneratorEngine } from './utils/sitemap.js';
 // 2. Core SEO Infrastructure
 import { siteConfig } from './config/site.config.js';
 import { clinicConfig } from './config/clinic.config.js';
@@ -129,8 +130,21 @@ async function runBuildPipeline() {
     SecurityManager.generateManifest(DIST_DIR, buildStats);
     QAReportGenerator.generate(DIST_DIR, buildStats);
 
-    // Step 5: Sitemap & Feed (To be implemented in Phase 4)
-    // Step 6: Validation & QA Report (To be implemented in Phase 5)
+    // Step 5: Sitemap & Feed
+    const pagesForSitemap = htmlFiles.map(file => {
+      const slug = file.replace('.html', '');
+      return {
+        slug: slug,
+        updatedAt: new Date().toISOString(), // Fallback (trong thực tế sẽ lấy từ CMS)
+        title: slug, // Fallback
+        description: slug,
+        createdAt: new Date().toISOString()
+      };
+    });
+    
+    GeneratorEngine.generateSitemap(pagesForSitemap, DIST_DIR);
+    GeneratorEngine.generateRss(pagesForSitemap, DIST_DIR);
+    GeneratorEngine.generateJsonFeed(pagesForSitemap, DIST_DIR);
     
     if (fs.existsSync(path.join(SRC_DIR, 'vercel.json'))) {
       fs.copyFileSync(path.join(SRC_DIR, 'vercel.json'), path.join(DIST_DIR, 'vercel.json'));
