@@ -1,39 +1,61 @@
 <!-- Home: Hero Section -->
-<section class="skmd-hero">
+<section class="skmd-hero skmd-hero--has-bg">
+  <div class="skmd-hero__bg-pattern" aria-hidden="true"></div>
   <div class="skmd-container skmd-hero__inner">
-    <div class="skmd-hero__content">
+    <div class="skmd-hero__content skmd-animate-fade-up">
       <h1 class="skmd-hero__title">
-        Giải Pháp Điều Trị Trĩ <span class="text-primary">Không Đau</span> Đạt Chuẩn Quốc Tế
+        Giải Pháp Điều Trị Trĩ <span class="text-primary">Tiên Tiến</span> Đạt Chuẩn Quốc Tế
       </h1>
       <p class="skmd-hero__desc">
         Hệ thống chuyên khoa hậu môn trực tràng hàng đầu Cần Thơ. Chấm dứt cơn đau trĩ nhanh chóng với phác đồ cá nhân hóa từ các chuyên gia 15+ năm kinh nghiệm.
       </p>
       
-      <ul class="skmd-hero__features">
-        <li><i class="icon-check-circle"></i> Xâm lấn tối thiểu, mau hồi phục</li>
-        <li><i class="icon-check-circle"></i> Bác sĩ chuyên khoa trực tiếp điều trị</li>
-        <li><i class="icon-check-circle"></i> Chi phí minh bạch, không phát sinh</li>
+      <!-- 4 Trust Points -->
+      <ul class="skmd-hero__trust-points">
+        <li>
+          <div class="skmd-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg></div>
+          <span>Ít Đau Đớn</span>
+        </li>
+        <li>
+          <div class="skmd-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <span>Chuẩn Y Khoa</span>
+        </li>
+        <li>
+          <div class="skmd-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <span>Bảo Mật 100%</span>
+        </li>
+        <li>
+          <div class="skmd-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <span>Phục Hồi Nhanh</span>
+        </li>
       </ul>
 
       <div class="skmd-hero__actions">
-        <a href="/dat-lich" class="skmd-btn skmd-btn--primary skmd-btn--lg">Đặt Lịch Khám</a>
-        <a href="tel:<!-- INJECT_HOTLINE_RAW -->" class="skmd-btn skmd-btn--outline skmd-btn--lg">Gọi Tư Vấn Ngay</a>
+        <a href="/dat-lich" class="skmd-btn skmd-btn--primary skmd-btn--xl skmd-hero-btn">Đặt Lịch Khám</a>
+        <a href="tel:<!-- INJECT_HOTLINE_RAW -->" class="skmd-btn skmd-btn--outline skmd-btn--xl skmd-hero-btn">
+          <i class="icon-phone" style="margin-right: 8px;"></i> Tư Vấn Ngay
+        </a>
       </div>
     </div>
     
-    <div class="skmd-hero__visual">
-      <!-- Placeholder Medical Image -->
-      <div class="skmd-hero__image-wrapper">
-        <img src="https://images.unsplash.com/photo-1584982751601-97d880f6c406?auto=format&fit=crop&q=80&w=800&h=900" alt="Bác sĩ chuyên khoa" class="skmd-hero__img">
+    <div class="skmd-hero__visual skmd-animate-fade-left">
+      <div class="skmd-hero__image-wrapper skmd-ratio skmd-ratio--16-9">
+        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200" 
+             alt="Cơ sở vật chất phòng khám y khoa" 
+             class="skmd-hero__img" 
+             loading="eager"
+             srcset="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=600 600w,
+                     https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200 1200w"
+             sizes="(max-width: 768px) 100vw, 50vw">
         
         <!-- Floating Trust Card -->
-        <div class="skmd-floating-card skmd-floating-card--br">
+        <div class="skmd-floating-card skmd-floating-card--bl">
           <div class="skmd-floating-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
           <div class="skmd-floating-card__content">
             <strong>5000+</strong>
-            <span>Ca điều trị thành công</span>
+            <span>Ca tư vấn thành công</span>
           </div>
         </div>
       </div>

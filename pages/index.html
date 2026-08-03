@@ -21,8 +21,11 @@
     <!-- HERO SECTION -->
     <!-- INJECT_COMPONENT: components/home/hero.html -->
     
-    <!-- TRUST SECTION -->
-    <!-- INJECT_COMPONENT: components/home/trust.html -->
+    <!-- SOCIAL PROOF SECTION -->
+    <!-- INJECT_COMPONENT: components/home/social-proof.html -->
+
+    <!-- TECHNOLOGY SECTION (Replacing Doctor) -->
+    <!-- INJECT_COMPONENT: components/home/technology.html -->
     
     <!-- CATEGORY GRID SECTION -->
     <!-- INJECT_COMPONENT: components/home/category-grid.html -->
@@ -32,9 +35,6 @@
     
     <!-- WHY CHOOSE US SECTION -->
     <!-- INJECT_COMPONENT: components/home/why-choose-us.html -->
-    
-    <!-- DOCTOR SECTION -->
-    <!-- INJECT_COMPONENT: components/home/doctor.html -->
     
     <!-- FAQ SECTION -->
     <!-- INJECT_COMPONENT: components/home/faq.html -->
@@ -50,7 +50,7 @@
   <!-- CORE SCRIPTS -->
   <script src="/assets/js/core.js" defer></script>
   
-  <!-- Interactive Scripts (Menu, FAQ) -->
+  <!-- Interactive Scripts -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Mobile Menu Toggle
@@ -81,12 +81,6 @@
         header.addEventListener('click', () => {
           const item = header.parentElement;
           const isOpen = item.classList.contains('is-open');
-          
-          // Close others if you want accordion behavior
-          // document.querySelectorAll('.skmd-faq-item').forEach(i => {
-          //   i.classList.remove('is-open');
-          //   i.querySelector('.skmd-faq-item__header').setAttribute('aria-expanded', 'false');
-          // });
 
           if (!isOpen) {
             item.classList.add('is-open');
