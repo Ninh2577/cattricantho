@@ -6,36 +6,110 @@
   <!-- INJECT_SEO_TAGS -->
   <link rel="stylesheet" href="/assets/css/globals.css">
   <link rel="stylesheet" href="/assets/css/theme.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
   <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/home.css">
 </head>
-<body>
-  <!-- INJECT_COMPONENT: components/header.html -->
+<body data-theme="blue">
   
-  <main class="platform-main">
-    <section class="hero-section">
-      <div class="container">
-        <h1 class="hero-title"><!-- INJECT_SITE_NAME --></h1>
-        <p class="hero-desc"><!-- INJECT_SITE_DESC --></p>
-      </div>
-    </section>
+  <!-- HEADER -->
+  <!-- INJECT_COMPONENT: components/header.html -->
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
     
-    <section class="latest-articles-section">
-      <div class="container">
-        <h2>Bài viết mới nhất</h2>
-        <div id="articles-grid" class="grid-layout">
-          <!-- Populated by services/api.js -->
-        </div>
-      </div>
-    </section>
+    <!-- HERO SECTION -->
+    <!-- INJECT_COMPONENT: components/home/hero.html -->
+    
+    <!-- TRUST SECTION -->
+    <!-- INJECT_COMPONENT: components/home/trust.html -->
+    
+    <!-- CATEGORY GRID SECTION -->
+    <!-- INJECT_COMPONENT: components/home/category-grid.html -->
+    
+    <!-- LATEST ARTICLES SECTION -->
+    <!-- INJECT_COMPONENT: components/home/latest-articles.html -->
+    
+    <!-- WHY CHOOSE US SECTION -->
+    <!-- INJECT_COMPONENT: components/home/why-choose-us.html -->
+    
+    <!-- DOCTOR SECTION -->
+    <!-- INJECT_COMPONENT: components/home/doctor.html -->
+    
+    <!-- FAQ SECTION -->
+    <!-- INJECT_COMPONENT: components/home/faq.html -->
+    
+    <!-- CTA BANNER SECTION -->
+    <!-- INJECT_COMPONENT: components/home/cta-banner.html -->
+
   </main>
 
-  <!-- INJECT_COMPONENT: components/cta.html -->
+  <!-- FOOTER -->
   <!-- INJECT_COMPONENT: components/footer.html -->
+
+  <!-- CORE SCRIPTS -->
+  <script src="/assets/js/core.js" defer></script>
   
-  <script type="module" src="/assets/js/core.js"></script>
-  <script type="module">
-    import { apiService } from '/services/api.js';
-    // Logic to render articles
+  <!-- Interactive Scripts (Menu, FAQ) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile Menu Toggle
+      const menuToggle = document.querySelector('.skmd-menu-toggle');
+      const offcanvas = document.querySelector('.skmd-offcanvas');
+      const closeButtons = document.querySelectorAll('[data-action="close-menu"]');
+
+      if (menuToggle && offcanvas) {
+        menuToggle.addEventListener('click', () => {
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+          offcanvas.classList.toggle('is-active');
+          document.body.style.overflow = isExpanded ? '' : 'hidden'; // Prevent body scroll
+        });
+
+        closeButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            offcanvas.classList.remove('is-active');
+            document.body.style.overflow = '';
+          });
+        });
+      }
+
+      // FAQ Accordion
+      const faqHeaders = document.querySelectorAll('.skmd-faq-item__header');
+      faqHeaders.forEach(header => {
+        header.addEventListener('click', () => {
+          const item = header.parentElement;
+          const isOpen = item.classList.contains('is-open');
+          
+          // Close others if you want accordion behavior
+          // document.querySelectorAll('.skmd-faq-item').forEach(i => {
+          //   i.classList.remove('is-open');
+          //   i.querySelector('.skmd-faq-item__header').setAttribute('aria-expanded', 'false');
+          // });
+
+          if (!isOpen) {
+            item.classList.add('is-open');
+            header.setAttribute('aria-expanded', 'true');
+          } else {
+            item.classList.remove('is-open');
+            header.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+      
+      // Sticky Header Scroll effect
+      const header = document.querySelector('.skmd-header');
+      if (header) {
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 50) {
+            header.style.boxShadow = 'var(--shadow-md)';
+          } else {
+            header.style.boxShadow = 'var(--shadow-sm)';
+          }
+        }, { passive: true });
+      }
+    });
   </script>
 </body>
 </html>

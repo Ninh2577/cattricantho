@@ -1,11 +1,84 @@
-<!-- Shared Header Component -->
-<header class="platform-header">
-  <div class="container">
-    <a href="/" class="logo">
-      <img src="<!-- INJECT_LOGO -->" alt="<!-- INJECT_BRAND -->">
-    </a>
-    <nav class="main-nav">
-      <!-- Generated dynamically based on Taxonomy -->
-    </nav>
+<!-- Enterprise Header Component -->
+<header class="skmd-header" id="platform-header">
+  <!-- Top Bar -->
+  <div class="skmd-header__top">
+    <div class="skmd-container skmd-header__top-inner">
+      <div class="skmd-header__top-left">
+        <span class="skmd-top-item"><i class="icon-clock"></i> <!-- INJECT_WORKING_HOURS --></span>
+        <span class="skmd-top-item"><i class="icon-location"></i> <!-- INJECT_ADDRESS --></span>
+      </div>
+      <div class="skmd-header__top-right">
+        <a href="tel:<!-- INJECT_HOTLINE_RAW -->" class="skmd-top-link">
+          <i class="icon-phone"></i> <!-- INJECT_HOTLINE -->
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navbar -->
+  <div class="skmd-header__main">
+    <div class="skmd-container skmd-header__main-inner">
+      <!-- Logo -->
+      <a href="/" class="skmd-logo" aria-label="Trang chủ">
+        <!-- SVG Placeholder Logo for Medical (Blue Cross style) -->
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="skmd-logo__icon" aria-hidden="true">
+          <path d="M12 2L12 22M2 12L22 12" stroke="var(--color-primary)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="10" stroke="var(--color-primary-light)" stroke-width="2" opacity="0.3"/>
+        </svg>
+        <span class="skmd-logo__text"><!-- INJECT_BRAND --></span>
+      </a>
+
+      <!-- Desktop Menu -->
+      <nav class="skmd-nav-desktop" aria-label="Menu chính">
+        <ul class="skmd-menu">
+          <li><a href="/" class="skmd-menu__link active">Trang chủ</a></li>
+          <li><a href="/cat-tri" class="skmd-menu__link">Cắt trĩ</a></li>
+          <li><a href="/trieu-chung" class="skmd-menu__link">Triệu chứng</a></li>
+          <li><a href="/chi-phi" class="skmd-menu__link">Chi phí</a></li>
+          <li><a href="/bac-si" class="skmd-menu__link">Đội ngũ Bác sĩ</a></li>
+          <li><a href="/kien-thuc" class="skmd-menu__link">Kiến thức</a></li>
+        </ul>
+      </nav>
+
+      <!-- CTA & Mobile Toggle -->
+      <div class="skmd-header__actions">
+        <a href="/dat-lich" class="skmd-btn skmd-btn--primary skmd-header__cta">
+          Đặt lịch khám
+        </a>
+        <button class="skmd-menu-toggle" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="skmd-menu-toggle__line"></span>
+          <span class="skmd-menu-toggle__line"></span>
+          <span class="skmd-menu-toggle__line"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Off-Canvas Menu -->
+  <div class="skmd-offcanvas" id="mobile-menu" aria-hidden="true">
+    <div class="skmd-offcanvas__backdrop" data-action="close-menu"></div>
+    <div class="skmd-offcanvas__panel">
+      <div class="skmd-offcanvas__header">
+        <span class="skmd-logo__text"><!-- INJECT_BRAND --></span>
+        <button class="skmd-offcanvas__close" aria-label="Đóng menu" data-action="close-menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <nav class="skmd-nav-mobile" aria-label="Menu di động">
+        <ul class="skmd-mobile-menu">
+          <li><a href="/" class="skmd-mobile-menu__link active">Trang chủ</a></li>
+          <li><a href="/cat-tri" class="skmd-mobile-menu__link">Cắt trĩ</a></li>
+          <li><a href="/trieu-chung" class="skmd-mobile-menu__link">Triệu chứng</a></li>
+          <li><a href="/chi-phi" class="skmd-mobile-menu__link">Chi phí</a></li>
+          <li><a href="/bac-si" class="skmd-mobile-menu__link">Đội ngũ Bác sĩ</a></li>
+          <li><a href="/kien-thuc" class="skmd-mobile-menu__link">Kiến thức</a></li>
+          <li><a href="/lien-he" class="skmd-mobile-menu__link">Liên hệ</a></li>
+        </ul>
+      </nav>
+      <div class="skmd-offcanvas__footer">
+        <a href="tel:<!-- INJECT_HOTLINE_RAW -->" class="skmd-btn skmd-btn--outline skmd-btn--full">Gọi <!-- INJECT_HOTLINE --></a>
+        <a href="/dat-lich" class="skmd-btn skmd-btn--primary skmd-btn--full" style="margin-top: 12px;">Đặt lịch khám</a>
+      </div>
+    </div>
   </div>
 </header>

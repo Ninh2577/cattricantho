@@ -1,18 +1,84 @@
-<!-- Shared Footer Component -->
-<footer class="platform-footer">
-  <div class="container platform-footer__grid">
-    <div class="footer-brand">
-      <img src="<!-- INJECT_LOGO -->" alt="<!-- INJECT_BRAND -->">
-      <p>Hệ thống chuyên khoa uy tín, đạt chuẩn y tế.</p>
+<!-- Enterprise Footer Component -->
+<footer class="skmd-footer">
+  <div class="skmd-container skmd-footer__main">
+    <div class="skmd-grid-4">
+      
+      <!-- Col 1: Brand -->
+      <div class="skmd-footer__col">
+        <a href="/" class="skmd-logo skmd-logo--footer" aria-label="Trang chủ">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="skmd-logo__icon" aria-hidden="true">
+            <path d="M12 2L12 22M2 12L22 12" stroke="var(--color-primary)" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="10" stroke="var(--color-primary-light)" stroke-width="2" opacity="0.3"/>
+          </svg>
+          <span class="skmd-logo__text"><!-- INJECT_BRAND --></span>
+        </a>
+        <p class="skmd-footer__desc">
+          <!-- INJECT_SITE_DESC -->
+        </p>
+        <div class="skmd-social">
+          <a href="#" aria-label="Facebook" class="skmd-social__link"><i class="icon-facebook"></i></a>
+          <a href="#" aria-label="YouTube" class="skmd-social__link"><i class="icon-youtube"></i></a>
+          <a href="#" aria-label="Zalo" class="skmd-social__link"><i class="icon-zalo"></i></a>
+        </div>
+      </div>
+
+      <!-- Col 2: Services -->
+      <div class="skmd-footer__col">
+        <h3 class="skmd-footer__title">Chuyên Khoa</h3>
+        <ul class="skmd-footer__list">
+          <li><a href="/cat-tri">Cắt trĩ nội</a></li>
+          <li><a href="/cat-tri">Cắt trĩ ngoại</a></li>
+          <li><a href="/cat-tri">Trĩ hỗn hợp</a></li>
+          <li><a href="/trieu-chung">Khám hậu môn</a></li>
+          <li><a href="/chi-phi">Bảng giá chi phí</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Useful Links -->
+      <div class="skmd-footer__col">
+        <h3 class="skmd-footer__title">Dành Cho Bệnh Nhân</h3>
+        <ul class="skmd-footer__list">
+          <li><a href="/dat-lich">Hướng dẫn đặt lịch</a></li>
+          <li><a href="/faq">Câu hỏi thường gặp</a></li>
+          <li><a href="/bac-si">Đội ngũ Bác sĩ</a></li>
+          <li><a href="/kien-thuc">Kiến thức y khoa</a></li>
+          <li><a href="/chinh-sach">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Contact -->
+      <div class="skmd-footer__col">
+        <h3 class="skmd-footer__title">Liên Hệ</h3>
+        <ul class="skmd-footer__contact">
+          <li>
+            <i class="icon-location"></i>
+            <span><!-- INJECT_ADDRESS --></span>
+          </li>
+          <li>
+            <i class="icon-phone"></i>
+            <a href="tel:<!-- INJECT_HOTLINE_RAW -->"><!-- INJECT_HOTLINE --></a>
+          </li>
+          <li>
+            <i class="icon-clock"></i>
+            <span><!-- INJECT_WORKING_HOURS --></span>
+          </li>
+        </ul>
+      </div>
+
     </div>
-    <div class="footer-links">
-      <h4>Chuyên Mục</h4>
-      <nav id="footer-categories-nav"></nav>
-    </div>
-    <div class="footer-contact">
-      <h4>Liên Hệ</h4>
-      <p><i class="icon-phone"></i> <!-- INJECT_HOTLINE --></p>
-      <p><i class="icon-map"></i> <!-- INJECT_ADDRESS --></p>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="skmd-footer__bottom">
+    <div class="skmd-container skmd-footer__bottom-inner">
+      <p class="skmd-footer__copyright">
+        &copy; 2026 <!-- INJECT_BRAND -->. Giấy phép hoạt động do Sở Y Tế cấp.
+      </p>
+      <div class="skmd-footer__legal">
+        <a href="/privacy">Bảo mật thông tin</a>
+        <a href="/terms">Điều khoản sử dụng</a>
+        <a href="/sitemap.xml">Sitemap</a>
+      </div>
     </div>
   </div>
 </footer>

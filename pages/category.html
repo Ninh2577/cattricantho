@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- INJECT_SEO_TAGS -->
+  <link rel="stylesheet" href="/assets/css/globals.css">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/home.css"> <!-- Reusing magazine styles -->
+</head>
+<body data-theme="blue">
+  <!-- INJECT_COMPONENT: components/header.html -->
+  
+  <main id="main-content">
+    
+    <!-- Category Hero -->
+    <div style="background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-white) 100%); padding: 60px 0; border-bottom: 1px solid var(--color-border); text-align: center;">
+      <div class="skmd-container">
+        <h1 style="font-size: 2.5rem; color: var(--color-primary-dark); margin-bottom: 16px;">Tên Chuyên Mục</h1>
+        <p style="color: var(--color-text-light); max-width: 600px; margin: 0 auto; font-size: 1.125rem;">Mô tả ngắn gọn về chuyên mục y khoa. Tối ưu SEO cho danh mục bài viết.</p>
+      </div>
+    </div>
+
+    <div class="skmd-container skmd-section">
+      <div class="skmd-layout-sidebar">
+        
+        <!-- MAIN FEED -->
+        <div class="skmd-feed">
+          
+          <div class="skmd-magazine__list">
+            <!-- Article Item -->
+            <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; transition: transform var(--transition-fast);">
+              <a href="/bai-viet-1" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
+                <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
+                  <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400" alt="Thumbnail">
+                </div>
+                <div class="skmd-article__content">
+                  <div class="skmd-article__meta">
+                    <span class="skmd-badge skmd-badge--primary">Tin Tức Y Tế</span>
+                    <span class="skmd-article__date">03/08/2026</span>
+                  </div>
+                  <h3 class="skmd-article__title" style="font-size: 1.25rem; margin-bottom:12px;">Phương pháp PPH trong điều trị cắt trĩ: Đột phá y học ít xâm lấn</h3>
+                  <p class="skmd-article__excerpt">Phương pháp PPH đang trở thành tiêu chuẩn vàng trong phẫu thuật cắt trĩ nhờ ưu điểm vượt trội về thời gian phục hồi...</p>
+                </div>
+              </a>
+            </article>
+
+            <!-- Article Item -->
+            <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px;">
+              <a href="/bai-viet-2" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
+                <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
+                  <img src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&q=80&w=400" alt="Thumbnail">
+                </div>
+                <div class="skmd-article__content">
+                  <div class="skmd-article__meta">
+                    <span class="skmd-badge skmd-badge--outline">Triệu Chứng</span>
+                    <span class="skmd-article__date">01/08/2026</span>
+                  </div>
+                  <h3 class="skmd-article__title" style="font-size: 1.25rem; margin-bottom:12px;">5 Dấu hiệu cảnh báo bệnh trĩ bạn không nên bỏ qua</h3>
+                  <p class="skmd-article__excerpt">Nhận biết sớm các dấu hiệu của bệnh trĩ giúp việc điều trị dễ dàng và ít tốn kém hơn rất nhiều...</p>
+                </div>
+              </a>
+            </article>
+          </div>
+
+          <!-- Pagination -->
+          <div style="display: flex; justify-content: center; gap: 8px; margin-top: 40px;">
+            <a href="#" class="skmd-btn skmd-btn--primary">1</a>
+            <a href="#" class="skmd-btn skmd-btn--outline">2</a>
+            <a href="#" class="skmd-btn skmd-btn--outline">3</a>
+          </div>
+
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="skmd-sidebar">
+          
+          <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 32px;">
+            <h3 style="font-size: 1.25rem; color: var(--color-primary-dark); margin-bottom: 16px; border-bottom: 2px solid var(--color-secondary); padding-bottom: 8px;">Tìm Kiếm</h3>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" placeholder="Tìm kiếm bài viết..." style="flex:1; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-sm);">
+              <button class="skmd-btn skmd-btn--primary" style="min-width:auto; padding: 0 16px;">TÌM</button>
+            </div>
+          </div>
+
+          <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 32px;">
+            <h3 style="font-size: 1.25rem; color: var(--color-primary-dark); margin-bottom: 16px; border-bottom: 2px solid var(--color-secondary); padding-bottom: 8px;">Chuyên Mục Nổi Bật</h3>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:12px;">
+              <li><a href="#" style="color: var(--color-text-main);">Triệu chứng (12)</a></li>
+              <li><a href="#" style="color: var(--color-text-main);">Nguyên nhân (8)</a></li>
+              <li><a href="#" style="color: var(--color-text-main);">Phương pháp điều trị (15)</a></li>
+              <li><a href="#" style="color: var(--color-text-main);">Chi phí (5)</a></li>
+            </ul>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- INJECT_COMPONENT: components/footer.html -->
+  <script src="/assets/js/core.js" defer></script>
+</body>
+</html>

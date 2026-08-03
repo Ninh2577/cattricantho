@@ -1,0 +1,68 @@
+/* Layout Architecture (Grid & Spacing) */
+
+/* Container Rules */
+.skmd-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.skmd-content {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Layout System */
+.skmd-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.skmd-layout-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+@media (min-width: 1024px) {
+  .skmd-layout-sidebar {
+    grid-template-columns: 1fr 350px;
+  }
+}
+
+/* Section Spacing Rules */
+.skmd-section {
+  padding: 40px 0;
+}
+
+.skmd-section-lg {
+  padding: 60px 0;
+}
+
+@media (min-width: 768px) {
+  .skmd-section {
+    padding: 80px 0;
+  }
+  .skmd-section-lg {
+    padding: 120px 0;
+  }
+}
+
+/* Grid Rules */
+.skmd-grid-2 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.skmd-grid-3 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.skmd-grid-4 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+@media (min-width: 640px) {
+  .skmd-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .skmd-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .skmd-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .skmd-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .skmd-grid-4 { grid-template-columns: repeat(4, 1fr); }
+}
