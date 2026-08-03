@@ -449,6 +449,9 @@
   gap: 24px;
 }
 .skmd-article-small {
+  /* Container for small article */
+}
+.skmd-article-small .skmd-article__link {
   display: flex;
   gap: 16px;
   align-items: center;
