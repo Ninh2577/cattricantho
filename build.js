@@ -61,6 +61,7 @@ try {
     // 2. Inject Variables
     compiledHtml = compiledHtml
       .replace(/<!--\s*INJECT_SITE_NAME\s*-->/g, siteConfig.name)
+      .replace(/<!--\s*INJECT_BRAND\s*-->/g, siteConfig.name)
       .replace(/<!--\s*INJECT_SITE_DESC\s*-->/g, siteConfig.description)
       .replace(/<!--\s*INJECT_LOGO\s*-->/g, siteConfig.logo)
       .replace(/<!--\s*INJECT_HOTLINE\s*-->/g, clinicConfig.hotlineDisplay)
