@@ -1,0 +1,10 @@
+{
+  "name": "enterprise-clinic-platform",
+  "version": "1.0.0",
+  "description": "Multi-site Clinic Architecture",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "start": "npx serve dist"
+  }
+}
