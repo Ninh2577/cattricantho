@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- INJECT_SEO_TAGS -->
+  <link rel="stylesheet" href="/assets/css/globals.css">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+</head>
+<body>
+  <!-- INJECT_COMPONENT: components/header.html -->
+  
+  <main class="platform-main">
+    <section class="hero-section">
+      <div class="container">
+        <h1 class="hero-title"><!-- INJECT_SITE_NAME --></h1>
+        <p class="hero-desc"><!-- INJECT_SITE_DESC --></p>
+      </div>
+    </section>
+    
+    <section class="latest-articles-section">
+      <div class="container">
+        <h2>Bài viết mới nhất</h2>
+        <div id="articles-grid" class="grid-layout">
+          <!-- Populated by services/api.js -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- INJECT_COMPONENT: components/cta.html -->
+  <!-- INJECT_COMPONENT: components/footer.html -->
+  
+  <script type="module" src="/assets/js/core.js"></script>
+  <script type="module">
+    import { apiService } from '/services/api.js';
+    // Logic to render articles
+  </script>
+</body>
+</html>

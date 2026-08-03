@@ -1,0 +1,57 @@
+/* Shared Components CSS */
+
+/* --- CTA Component --- */
+.platform-cta {
+  display: flex;
+  gap: 12px;
+}
+
+.platform-cta.platform-cta--sticky-mobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--color-white);
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  padding: 10px;
+  z-index: 1000;
+  display: none; /* Only show on mobile media query */
+}
+
+@media (max-width: 768px) {
+  .platform-cta.platform-cta--sticky-mobile {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn-hotline {
+  background: #ef4444;
+  color: var(--color-white);
+}
+
+.pulse {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}

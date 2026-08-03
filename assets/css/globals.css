@@ -1,0 +1,15 @@
+/* 
+  Global CSS Variables derived from theme.config.js 
+  Will be injected dynamically or compiled.
+*/
+:root {
+  --color-primary: #0ea5e9;
+  --color-primary-light: #38bdf8;
+  --color-primary-dark: #0369a1;
+  --color-secondary: #f0f9ff;
+  --color-text-main: #1e293b;
+  --color-text-light: #64748b;
+  --color-border: #e2e8f0;
+  --color-bg-offset: #f8fafc;
+  --color-white: #ffffff;
+}

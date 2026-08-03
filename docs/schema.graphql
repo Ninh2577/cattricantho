@@ -1,0 +1,70 @@
+# CMS Data Model Definition (Hygraph)
+# Documented for Enterprise Multi-site Platform
+
+type Article {
+  # Core
+  id: ID!
+  title: String!
+  slug: String! @unique
+  excerpt: String
+  content: RichText
+  featuredImage: Asset
+  
+  # Taxonomy
+  category: Category
+  tags: [Tag]
+  disease: Disease
+  
+  # Medical Trust (E-E-A-T)
+  author: Author
+  medicalReviewer: Author
+  factChecked: Boolean
+  reviewDate: DateTime
+  references: [String]
+  
+  # UX & SEO
+  seoTitle: String
+  seoDescription: String
+  canonicalUrl: String
+  robots: String # e.g. "index, follow"
+  schemaType: String # e.g. "MedicalWebPage", "Article"
+  readingTime: Int
+  
+  # Components
+  faq: [FAQ]
+  
+  # Audit
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Category {
+  name: String!
+  slug: String! @unique
+  description: String
+  icon: String
+  parent: Category
+}
+
+type Author {
+  name: String!
+  slug: String! @unique
+  bio: String
+  avatar: Asset
+  credentials: [String] # e.g. ["MD", "PhD"]
+  jobTitle: String
+  socialLinks: Json
+}
+
+type Disease {
+  name: String!
+  slug: String! @unique
+  icdCode: String
+  symptoms: [String]
+  treatments: [String]
+}
+
+type FAQ {
+  question: String!
+  answer: RichText!
+}

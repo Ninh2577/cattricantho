@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/nguyen-nhan",
+      "destination": "/pages/category.html"
+    },
+    {
+      "source": "/dau-hieu",
+      "destination": "/pages/category.html"
+    },
+    {
+      "source": "/tri-noi",
+      "destination": "/pages/category.html"
+    },
+    {
+      "source": "/tri-ngoai",
+      "destination": "/pages/category.html"
+    },
+    {
+      "source": "/tri-hon-hop",
+      "destination": "/pages/category.html"
+    },
+    {
+      "source": "/ro-hau-mon",
+      "destination": "/pages/category.html"
+    },
+    {
+      "source": "/:slug([^.]+)",
+      "destination": "/pages/single.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self' https://*.hygraph.com https://*.google-analytics.com https://*.facebook.net; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com;"
+        }
+      ]
+    }
+  ]
+}
