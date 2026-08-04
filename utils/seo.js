@@ -66,6 +66,11 @@ export class SEOManager {
       <meta name="theme-color" content="${themeColor}">
       <meta name="robots" content="${robots}">
       
+      <!-- Favicon & Icons -->
+      <link rel="icon" type="image/x-icon" href="${siteConfig.favicon}">
+      <link rel="icon" type="image/png" sizes="32x32" href="${siteConfig.logo}">
+      <link rel="apple-touch-icon" sizes="180x180" href="${siteConfig.logo}">
+      
       <!-- Canonical & Hreflang -->
       <link rel="canonical" href="${canonical}">
       <link rel="alternate" hreflang="${hreflang}" href="${canonical}">
