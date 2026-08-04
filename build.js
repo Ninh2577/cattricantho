@@ -276,6 +276,11 @@ async function runBuildPipeline() {
               catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_TITLE -->/g, catData.name);
               catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_DESC -->/g, `Danh sách các bài viết y khoa thuộc chuyên mục ${catData.name}.`);
               
+              // Active State for Category Pills
+              const activeCatKey = catSlug.replace(/-/g, '_').toUpperCase();
+              catHtml = catHtml.replace(`<!-- ACTIVE_${activeCatKey} -->`, 'background: var(--color-primary) !important; color: white !important; border-color: var(--color-primary) !important;');
+              catHtml = catHtml.replace(/<!-- ACTIVE_[A-Z_]+ -->/g, ''); // Xóa các biến active còn lại
+              
               let articlesHtml = '';
               
               if (catData.articles.length === 0) {
