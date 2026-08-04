@@ -191,6 +191,7 @@ async function runBuildPipeline() {
         const singleTemplatePath = path.join(pagesDir, 'single.html');
         if (fs.existsSync(singleTemplatePath)) {
           const singleTemplate = fs.readFileSync(singleTemplatePath, 'utf8');
+          const articlesByCategory = {};
           for (const article of cmsArticles) {
             try {
               const articleSlug = article.slug || `bai-viet-${article.id}`;
@@ -206,6 +207,17 @@ async function runBuildPipeline() {
                 createdAt: article.createdAt,
                 updatedAt: article.updatedAt
               };
+              
+              const categoryObj = article.category || { name: 'Kiến Thức Y Khoa', slug: 'kien-thuc' };
+              const categorySlug = categoryObj.slug;
+              if (!articlesByCategory[categorySlug]) {
+                articlesByCategory[categorySlug] = {
+                  name: categoryObj.name,
+                  slug: categorySlug,
+                  articles: []
+                };
+              }
+              articlesByCategory[categorySlug].articles.push(article);
               
               let articleHtml = singleTemplate;
               
@@ -245,6 +257,44 @@ async function runBuildPipeline() {
               buildStats.generated++;
             } catch (err) {
               Logger.error('Orchestrator', `Lỗi tạo trang bài viết ${article.slug}:`, err);
+            }
+          }
+
+          // Generate Category Pages
+          const categoryTemplatePath = path.join(pagesDir, 'category.html');
+          if (fs.existsSync(categoryTemplatePath)) {
+            const categoryTemplate = fs.readFileSync(categoryTemplatePath, 'utf8');
+            for (const [catSlug, catData] of Object.entries(articlesByCategory)) {
+              let catHtml = categoryTemplate;
+              catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_TITLE -->/g, catData.name);
+              catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_DESC -->/g, `Danh sách các bài viết y khoa thuộc chuyên mục ${catData.name}.`);
+              
+              let articlesHtml = '';
+              for (const art of catData.articles) {
+                const dateFormatted = art.createdAt ? new Date(art.createdAt).toLocaleDateString('vi-VN') : '';
+                const img = art.featuredImage?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
+                articlesHtml += `
+            <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
+              <a href="/${art.slug}" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
+                <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
+                  <img src="${img}" alt="${art.title}" style="border-radius: var(--radius-sm); object-fit: cover; height: 160px; width: 100%;">
+                </div>
+                <div class="skmd-article__content">
+                  <div class="skmd-article__meta">
+                    <span class="skmd-badge skmd-badge--primary">${catData.name}</span>
+                    <span class="skmd-article__date" style="margin-left: 12px; font-size: 0.875rem; color: var(--color-text-light);">${dateFormatted}</span>
+                  </div>
+                  <h3 class="skmd-article__title" style="font-size: 1.25rem; margin: 12px 0;">${art.title}</h3>
+                  <p class="skmd-article__excerpt" style="color: var(--color-text-main); line-height: 1.6;">${art.excerpt || ''}</p>
+                </div>
+              </a>
+            </article>`;
+              }
+              catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_ARTICLES -->/g, articlesHtml);
+              
+              catHtml = injectComponentsAndVars(catHtml, catSlug);
+              fs.writeFileSync(path.join(distPagesDir, `${catSlug}.html`), catHtml);
+              buildStats.generated++;
             }
           }
         }

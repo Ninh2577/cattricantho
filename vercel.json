@@ -6,30 +6,6 @@
       "destination": "/pages/index.html"
     },
     {
-      "source": "/nguyen-nhan",
-      "destination": "/pages/category.html"
-    },
-    {
-      "source": "/dau-hieu",
-      "destination": "/pages/category.html"
-    },
-    {
-      "source": "/tri-noi",
-      "destination": "/pages/category.html"
-    },
-    {
-      "source": "/tri-ngoai",
-      "destination": "/pages/category.html"
-    },
-    {
-      "source": "/tri-hon-hop",
-      "destination": "/pages/category.html"
-    },
-    {
-      "source": "/ro-hau-mon",
-      "destination": "/pages/category.html"
-    },
-    {
       "source": "/:slug([^.]+)",
       "destination": "/pages/:slug.html"
     }
