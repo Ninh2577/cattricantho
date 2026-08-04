@@ -31,7 +31,7 @@
     },
     {
       "source": "/:slug([^.]+)",
-      "destination": "/pages/single.html"
+      "destination": "/pages/:slug.html"
     }
   ],
   "headers": [
