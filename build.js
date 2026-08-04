@@ -19,6 +19,7 @@ import { SchemaMapper } from './utils/schema-mapper.js';
 import { SchemaFactory } from './utils/schema.js';
 import { SchemaValidator } from './utils/schema-validator.js';
 import { SchemaReportGenerator } from './utils/schema-report.js';
+import { apiService } from './services/api.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -176,6 +177,53 @@ async function runBuildPipeline() {
         buildStats.errorLogs.push(`[${file}] Runtime Error: ${e.message}`);
       }
     });
+
+    // Step 4.5: Hygraph CMS Dynamic SSG Article Builder
+    Logger.info('Orchestrator', 'Đang kết nối Hygraph CMS để đồng bộ bài viết tự động...');
+    try {
+      const cmsArticles = await apiService.getAllArticles();
+      if (cmsArticles && cmsArticles.length > 0) {
+        Logger.info('Orchestrator', `Đã tìm thấy ${cmsArticles.length} bài viết từ Hygraph CMS. Đang tạo trang tĩnh...`);
+        const singleTemplatePath = path.join(pagesDir, 'single.html');
+        if (fs.existsSync(singleTemplatePath)) {
+          const singleTemplate = fs.readFileSync(singleTemplatePath, 'utf8');
+          for (const article of cmsArticles) {
+            try {
+              const articleSlug = article.slug || `bai-viet-${article.id}`;
+              const pageData = {
+                title: article.title,
+                slug: articleSlug,
+                description: article.excerpt || article.seoDescription,
+                seoTitle: article.seoTitle || article.title,
+                seoDescription: article.seoDescription || article.excerpt,
+                featuredImage: article.featuredImage,
+                author: article.author,
+                reviewer: article.medicalReviewer,
+                createdAt: article.createdAt,
+                updatedAt: article.updatedAt
+              };
+              
+              let articleHtml = singleTemplate;
+              // Inject content & Metadata for this article
+              articleHtml = articleHtml.replace(/Tiêu đề bài viết Y khoa chuẩn Editorial/g, article.title);
+              if (article.content?.html) {
+                articleHtml = articleHtml.replace(/<p class="skmd-text-lead">[\s\S]*?<\/div>/g, `<div class="skmd-article-body">${article.content.html}</div>`);
+              }
+              
+              articleHtml = injectComponentsAndVars(articleHtml, articleSlug);
+              fs.writeFileSync(path.join(distPagesDir, `${articleSlug}.html`), articleHtml);
+              buildStats.generated++;
+            } catch (err) {
+              Logger.error('Orchestrator', `Lỗi tạo trang bài viết ${article.slug}:`, err);
+            }
+          }
+        }
+      } else {
+        Logger.info('Orchestrator', 'Chưa có bài viết mới từ Hygraph CMS (hoặc chưa cấu hình Endpoint). Sử dụng dữ liệu mẫu.');
+      }
+    } catch (cmsErr) {
+      Logger.warning('Orchestrator', 'Không thể kết nối Hygraph CMS lúc này. Tiếp tục build với dữ liệu tĩnh.', cmsErr);
+    }
 
     // Generate Build Manifest & QA Reports
     buildStats.duration = Date.now() - startTime;

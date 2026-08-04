@@ -5,7 +5,7 @@ export const siteConfig = {
   url: "https://cattricantho.vercel.app",
   logo: "/assets/images/logo.png",
   favicon: "/favicon.ico",
-  cmsEndpoint: "https://ap-south-1.cdn.hygraph.com/content/cmrezpq25018t07walir17znu/master",
+  cmsEndpoint: "https://us-west-2.cdn.hygraph.com/content/cmrwmihwf00e909w4mn88wx6u/master",
   
   // Feature Flags
   features: {

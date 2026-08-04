@@ -36,37 +36,87 @@ class HygraphService {
     }
   }
 
+  async getAllArticles() {
+    const query = `
+      query GetAllArticles {
+        articles(orderBy: createdAt_DESC, first: 100) {
+          id
+          title
+          slug
+          excerpt
+          featuredImage {
+            url
+          }
+          category {
+            name
+            slug
+          }
+          author {
+            name
+            role
+            avatar { url }
+          }
+          medicalReviewer {
+            name
+            role
+          }
+          content {
+            html
+            text
+          }
+          seoTitle
+          seoDescription
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+    const data = await this.fetchGraphQL(query);
+    return data?.articles || [];
+  }
+
   async getLatestArticles(limit = 10) {
     const query = `
       query GetLatestArticles($limit: Int!) {
         articles(orderBy: createdAt_DESC, first: $limit) {
+          id
           title
           slug
           excerpt
           featuredImage { url }
           category { name slug }
-          author { name }
+          author { name role }
           createdAt
+          updatedAt
         }
       }
     `;
-    return this.fetchGraphQL(query, { limit });
+    const data = await this.fetchGraphQL(query, { limit });
+    return data?.articles || [];
   }
 
   async getArticleBySlug(slug) {
     const query = `
       query GetArticleBySlug($slug: String!) {
         article(where: { slug: $slug }) {
+          id
           title
+          slug
+          excerpt
           content { html }
+          featuredImage { url }
+          category { name slug }
+          author { name role avatar { url } }
+          medicalReviewer { name role }
           seoTitle
           seoDescription
-          medicalReviewer { name credentials }
+          createdAt
           updatedAt
         }
       }
     `;
-    return this.fetchGraphQL(query, { slug });
+    const data = await this.fetchGraphQL(query, { slug });
+    return data?.article || null;
   }
 }
 
