@@ -198,21 +198,36 @@ async function runBuildPipeline() {
               const pageData = {
                 title: article.title,
                 slug: articleSlug,
-                description: article.excerpt || article.seoDescription,
+                description: article.tomtat || article.seoDescription,
                 seoTitle: article.seoTitle || article.title,
-                seoDescription: article.seoDescription || article.excerpt,
-                featuredImage: article.featuredImage,
-                author: article.author,
-                reviewer: article.medicalReviewer,
-                createdAt: article.createdAt,
-                updatedAt: article.updatedAt
+                seoDescription: article.seoDescription || article.tomtat,
+                featuredImage: article.anh,
+                author: { name: article.tacGia },
+                createdAt: article.ngayDang,
               };
               
-              const categoryObj = article.category || { name: 'Kiến Thức Y Khoa', slug: 'kien-thuc' };
-              const categorySlug = categoryObj.slug;
+              const rawCat = article.danhMuc || 'tri';
+              const catSlugMap = {
+                'tri': 'tri',
+                'tri_noi': 'tri-noi',
+                'tri_ngoai': 'tri-ngoai',
+                'tri_hon_hop': 'tri-hon-hop',
+                'ro_hau_mon': 'ro-hau-mon'
+              };
+              const catNameMap = {
+                'tri': 'Trĩ',
+                'tri_noi': 'Trĩ nội',
+                'tri_ngoai': 'Trĩ ngoại',
+                'tri_hon_hop': 'Trĩ hỗn hợp',
+                'ro_hau_mon': 'Rò hậu môn'
+              };
+              
+              const categorySlug = catSlugMap[rawCat] || 'kien-thuc';
+              const categoryName = catNameMap[rawCat] || 'Kiến Thức Y Khoa';
+              
               if (!articlesByCategory[categorySlug]) {
                 articlesByCategory[categorySlug] = {
-                  name: categoryObj.name,
+                  name: categoryName,
                   slug: categorySlug,
                   articles: []
                 };
@@ -222,26 +237,25 @@ async function runBuildPipeline() {
               let articleHtml = singleTemplate;
               
               // ---- INJECT CMS DATA VÀO PLACEHOLDERS ----
-              const authorName = article.author?.name || 'Đội ngũ y khoa';
-              const authorAvatar = article.author?.avatar?.url || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=100&h=100';
-              const reviewerName = article.medicalReviewer?.name || authorName;
-              const reviewerRole = article.medicalReviewer?.role || 'Chuyên gia y khoa';
-              const reviewerAvatar = article.medicalReviewer?.avatar?.url || authorAvatar;
-              const category = article.category?.name || 'Kiến Thức Y Khoa';
-              const wordCount = article.content?.text?.split(' ').length || 0;
-              const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-              const dateFormatted = article.createdAt 
-                ? new Date(article.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+              const authorName = article.tacGia || 'Đội ngũ y khoa';
+              const authorAvatar = 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=100&h=100';
+              const reviewerName = authorName;
+              const reviewerRole = 'Chuyên gia y khoa';
+              const reviewerAvatar = authorAvatar;
+              const wordCount = article.noiDung?.text?.split(' ').length || 0;
+              const readingTime = article.thoiGianDoc || Math.max(1, Math.ceil(wordCount / 200));
+              const dateFormatted = article.ngayDang 
+                ? new Date(article.ngayDang).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
                 : '';
-              const featuredImageHtml = article.featuredImage?.url 
-                ? `<img src="${article.featuredImage.url}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;">`
+              const featuredImageHtml = article.anh?.url 
+                ? `<img src="${article.anh.url}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;">`
                 : '';
 
               articleHtml = articleHtml
                 .replace(/<!-- INJECT_ARTICLE_TITLE -->/g, article.title || '')
-                .replace(/<!-- INJECT_ARTICLE_CATEGORY -->/g, category)
-                .replace(/<!-- INJECT_ARTICLE_EXCERPT -->/g, article.excerpt || '')
-                .replace(/<!-- INJECT_ARTICLE_CONTENT -->/g, article.content?.html || '')
+                .replace(/<!-- INJECT_ARTICLE_CATEGORY -->/g, categoryName)
+                .replace(/<!-- INJECT_ARTICLE_EXCERPT -->/g, article.tomtat || '')
+                .replace(/<!-- INJECT_ARTICLE_CONTENT -->/g, article.noiDung?.html || '')
                 .replace(/<!-- INJECT_ARTICLE_FEATURED_IMAGE -->/g, featuredImageHtml)
                 .replace(/<!-- INJECT_ARTICLE_DATE -->/g, dateFormatted)
                 .replace(/<!-- INJECT_READING_TIME -->/g, readingTime)
@@ -271,8 +285,8 @@ async function runBuildPipeline() {
               
               let articlesHtml = '';
               for (const art of catData.articles) {
-                const dateFormatted = art.createdAt ? new Date(art.createdAt).toLocaleDateString('vi-VN') : '';
-                const img = art.featuredImage?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
+                const dateFormatted = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
+                const img = art.anh?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
                 articlesHtml += `
             <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
               <a href="/${art.slug}" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
@@ -285,7 +299,7 @@ async function runBuildPipeline() {
                     <span class="skmd-article__date" style="margin-left: 12px; font-size: 0.875rem; color: var(--color-text-light);">${dateFormatted}</span>
                   </div>
                   <h3 class="skmd-article__title" style="font-size: 1.25rem; margin: 12px 0;">${art.title}</h3>
-                  <p class="skmd-article__excerpt" style="color: var(--color-text-main); line-height: 1.6;">${art.excerpt || ''}</p>
+                  <p class="skmd-article__excerpt" style="color: var(--color-text-main); line-height: 1.6;">${art.tomtat || ''}</p>
                 </div>
               </a>
             </article>`;

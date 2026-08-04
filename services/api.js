@@ -39,35 +39,24 @@ class HygraphService {
   async getAllArticles() {
     const query = `
       query GetAllArticles {
-        articles(orderBy: createdAt_DESC, first: 100) {
+        articles(orderBy: ngayDang_DESC, first: 100) {
           id
           title
           slug
-          excerpt
-          featuredImage {
+          anh {
             url
           }
-          category {
-            name
-            slug
-          }
-          author {
-            name
-            role
-            avatar { url }
-          }
-          medicalReviewer {
-            name
-            role
-          }
-          content {
+          noiDung {
             html
             text
           }
+          tomtat
+          tacGia
+          ngayDang
+          thoiGianDoc
+          danhMuc
           seoTitle
           seoDescription
-          createdAt
-          updatedAt
         }
       }
     `;
@@ -78,16 +67,15 @@ class HygraphService {
   async getLatestArticles(limit = 10) {
     const query = `
       query GetLatestArticles($limit: Int!) {
-        articles(orderBy: createdAt_DESC, first: $limit) {
+        articles(orderBy: ngayDang_DESC, first: $limit) {
           id
           title
           slug
-          excerpt
-          featuredImage { url }
-          category { name slug }
-          author { name role }
-          createdAt
-          updatedAt
+          tomtat
+          anh { url }
+          danhMuc
+          tacGia
+          ngayDang
         }
       }
     `;
@@ -102,16 +90,15 @@ class HygraphService {
           id
           title
           slug
-          excerpt
-          content { html }
-          featuredImage { url }
-          category { name slug }
-          author { name role avatar { url } }
-          medicalReviewer { name role }
+          tomtat
+          noiDung { html }
+          anh { url }
+          danhMuc
+          tacGia
+          ngayDang
+          thoiGianDoc
           seoTitle
           seoDescription
-          createdAt
-          updatedAt
         }
       }
     `;
