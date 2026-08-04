@@ -94,51 +94,41 @@
 
       <div class="skmd-layout-sidebar">
         <!-- MAIN ARTICLE -->
-        <article class="skmd-article">
+         <article class="skmd-article">
           <header class="skmd-article-header">
-            <span class="skmd-badge skmd-badge--primary" style="margin-bottom:16px;">Kiến Thức Y Khoa</span>
-            <h1 class="skmd-heading-1" style="font-size: 2.5rem; line-height: 1.3;">Tiêu đề bài viết Y khoa chuẩn Editorial</h1>
+            <span class="skmd-badge skmd-badge--primary" style="margin-bottom:16px;"><!-- INJECT_ARTICLE_CATEGORY --></span>
+            <h1 class="skmd-heading-1" style="font-size: 2.5rem; line-height: 1.3;"><!-- INJECT_ARTICLE_TITLE --></h1>
             
             <div class="skmd-article-meta">
               <div class="skmd-article-author">
-                <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=100&h=100" alt="Author">
-                <span>BS.CKI Nguyễn Văn A</span>
+                <img src="<!-- INJECT_AUTHOR_AVATAR -->" alt="<!-- INJECT_AUTHOR_NAME -->">
+                <span><!-- INJECT_AUTHOR_NAME --></span>
               </div>
               <span>|</span>
-              <span><i class="icon-calendar"></i> 03/08/2026</span>
+              <span><i class="icon-calendar"></i> <!-- INJECT_ARTICLE_DATE --></span>
               <span>|</span>
-              <span><i class="icon-clock"></i> 5 phút đọc</span>
+              <span><i class="icon-clock"></i> <!-- INJECT_READING_TIME --> phút đọc</span>
               <span>|</span>
               <span style="color: var(--color-success);"><i class="icon-check"></i> Đã kiểm duyệt y khoa</span>
             </div>
           </header>
 
           <div class="skmd-article-body">
-            <p class="skmd-text-lead">Đây là phần mô tả ngắn (excerpt) tóm tắt nội dung chính của bài viết, giúp người đọc nắm bắt nhanh thông tin y tế quan trọng nhất.</p>
+            <p class="skmd-text-lead"><!-- INJECT_ARTICLE_EXCERPT --></p>
             
-            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800" alt="Hình ảnh y khoa minh họa">
+            <!-- INJECT_ARTICLE_FEATURED_IMAGE -->
 
-            <h2>1. Nguyên nhân gây bệnh trĩ</h2>
-            <p>Nội dung chi tiết được render từ CMS. Tối ưu typography cho trải nghiệm đọc editorial.</p>
-            <ul>
-              <li>Chế độ ăn thiếu chất xơ</li>
-              <li>Thói quen sinh hoạt lười vận động</li>
-            </ul>
-
-            <!-- INJECT_COMPONENT: components/home/cta-banner.html -->
-
-            <h2>2. Phương pháp điều trị</h2>
-            <p>Nội dung chi tiết được render từ CMS. Tối ưu typography cho trải nghiệm đọc editorial.</p>
+            <!-- INJECT_ARTICLE_CONTENT -->
 
           </div>
           
           <!-- Author Box -->
           <div style="background: var(--color-bg-offset); padding: 32px; border-radius: var(--radius-md); margin-top: 60px;">
             <div style="display: flex; gap: 24px; align-items: center;">
-              <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=150&h=150" alt="Author" style="border-radius:50%; width:100px; height:100px; object-fit:cover;">
+              <img src="<!-- INJECT_REVIEWER_AVATAR -->" alt="<!-- INJECT_REVIEWER_NAME -->" style="border-radius:50%; width:100px; height:100px; object-fit:cover;">
               <div>
-                <h3 style="margin-bottom:8px;">Tham vấn y khoa: BS.CKI Nguyễn Văn A</h3>
-                <p style="color: var(--color-text-light); margin-bottom:0;">Chuyên gia hậu môn trực tràng với 15 năm kinh nghiệm. Tu nghiệp chuyên sâu tại Hàn Quốc và Singapore.</p>
+                <h3 style="margin-bottom:8px;">Tham vấn y khoa: <!-- INJECT_REVIEWER_NAME --></h3>
+                <p style="color: var(--color-text-light); margin-bottom:0;"><!-- INJECT_REVIEWER_ROLE --></p>
               </div>
             </div>
           </div>

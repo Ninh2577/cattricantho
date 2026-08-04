@@ -208,12 +208,38 @@ async function runBuildPipeline() {
               };
               
               let articleHtml = singleTemplate;
-              // Inject content & Metadata for this article
-              articleHtml = articleHtml.replace(/Tiêu đề bài viết Y khoa chuẩn Editorial/g, article.title);
-              if (article.content?.html) {
-                articleHtml = articleHtml.replace(/<p class="skmd-text-lead">[\s\S]*?<\/div>/g, `<div class="skmd-article-body">${article.content.html}</div>`);
-              }
               
+              // ---- INJECT CMS DATA VÀO PLACEHOLDERS ----
+              const authorName = article.author?.name || 'Đội ngũ y khoa';
+              const authorAvatar = article.author?.avatar?.url || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=100&h=100';
+              const reviewerName = article.medicalReviewer?.name || authorName;
+              const reviewerRole = article.medicalReviewer?.role || 'Chuyên gia y khoa';
+              const reviewerAvatar = article.medicalReviewer?.avatar?.url || authorAvatar;
+              const category = article.category?.name || 'Kiến Thức Y Khoa';
+              const wordCount = article.content?.text?.split(' ').length || 0;
+              const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+              const dateFormatted = article.createdAt 
+                ? new Date(article.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                : '';
+              const featuredImageHtml = article.featuredImage?.url 
+                ? `<img src="${article.featuredImage.url}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;">`
+                : '';
+
+              articleHtml = articleHtml
+                .replace(/<!-- INJECT_ARTICLE_TITLE -->/g, article.title || '')
+                .replace(/<!-- INJECT_ARTICLE_CATEGORY -->/g, category)
+                .replace(/<!-- INJECT_ARTICLE_EXCERPT -->/g, article.excerpt || '')
+                .replace(/<!-- INJECT_ARTICLE_CONTENT -->/g, article.content?.html || '')
+                .replace(/<!-- INJECT_ARTICLE_FEATURED_IMAGE -->/g, featuredImageHtml)
+                .replace(/<!-- INJECT_ARTICLE_DATE -->/g, dateFormatted)
+                .replace(/<!-- INJECT_READING_TIME -->/g, readingTime)
+                .replace(/<!-- INJECT_AUTHOR_NAME -->/g, authorName)
+                .replace(/<!-- INJECT_AUTHOR_AVATAR -->/g, authorAvatar)
+                .replace(/<!-- INJECT_REVIEWER_NAME -->/g, reviewerName)
+                .replace(/<!-- INJECT_REVIEWER_ROLE -->/g, reviewerRole)
+                .replace(/<!-- INJECT_REVIEWER_AVATAR -->/g, reviewerAvatar);
+
+              // Inject components & SEO tags with article page data
               articleHtml = injectComponentsAndVars(articleHtml, articleSlug);
               fs.writeFileSync(path.join(distPagesDir, `${articleSlug}.html`), articleHtml);
               buildStats.generated++;
