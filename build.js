@@ -247,6 +247,7 @@ async function runBuildPipeline() {
               articleHtml = articleHtml
                 .replace(/<!-- INJECT_ARTICLE_TITLE -->/g, article.title || '')
                 .replace(/<!-- INJECT_ARTICLE_CATEGORY -->/g, articlesByCategory[categorySlug]?.name || 'Trĩ')
+                .replace(/<!-- INJECT_CATEGORY_SLUG -->/g, categorySlug)
                 .replace(/<!-- INJECT_ARTICLE_EXCERPT -->/g, article.tomtat || '')
                 .replace(/<!-- INJECT_ARTICLE_CONTENT -->/g, article.noiDung?.html || '')
                 .replace(/<!-- INJECT_ARTICLE_FEATURED_IMAGE -->/g, featuredImageHtml)
