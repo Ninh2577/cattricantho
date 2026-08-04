@@ -186,7 +186,7 @@ async function runBuildPipeline() {
     Logger.info('Orchestrator', 'Đang kết nối Hygraph CMS để đồng bộ bài viết tự động...');
     try {
       const cmsArticles = await apiService.getAllArticles();
-      if (cmsArticles && cmsArticles.length > 0) {
+      if (cmsArticles) {
         Logger.info('Orchestrator', `Đã tìm thấy ${cmsArticles.length} bài viết từ Hygraph CMS. Đang tạo trang tĩnh...`);
         const singleTemplatePath = path.join(pagesDir, 'single.html');
         if (fs.existsSync(singleTemplatePath)) {
