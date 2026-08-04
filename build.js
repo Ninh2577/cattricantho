@@ -10,10 +10,15 @@ import { HtmlValidator } from './utils/html-validator.js';
 import { SecurityManager } from './utils/security.js';
 import { QAReportGenerator } from './utils/qa-report.js';
 import { GeneratorEngine } from './utils/sitemap.js';
-// 2. Core SEO Infrastructure
+
+// 2. Core SEO & Schema Infrastructure
 import { siteConfig } from './config/site.config.js';
 import { clinicConfig } from './config/clinic.config.js';
 import { SEOManager } from './utils/seo.js';
+import { SchemaMapper } from './utils/schema-mapper.js';
+import { SchemaFactory } from './utils/schema.js';
+import { SchemaValidator } from './utils/schema-validator.js';
+import { SchemaReportGenerator } from './utils/schema-report.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,7 +73,7 @@ async function runBuildPipeline() {
     const distPagesDir = path.join(DIST_DIR, 'pages');
     if (!fs.existsSync(distPagesDir)) fs.mkdirSync(distPagesDir, { recursive: true });
 
-    function injectComponentsAndVars(htmlContent) {
+    function injectComponentsAndVars(htmlContent, fileSlug) {
       const componentRegex = /<!--\s*INJECT_COMPONENT:\s*([^>]+)\s*-->/g;
       let compiledHtml = htmlContent.replace(componentRegex, (match, compPath) => {
         const fullPath = path.join(SRC_DIR, compPath.trim());
@@ -78,6 +83,45 @@ async function runBuildPipeline() {
         return match;
       });
 
+      // ---- ENTERPRISE SCHEMA PIPELINE ----
+      let pageType = 'article';
+      if (fileSlug === 'index') pageType = 'home';
+      else if (fileSlug === '404') pageType = '404';
+      else if (fileSlug.includes('category')) pageType = 'category';
+      else if (fileSlug.includes('landing')) pageType = 'landing';
+      
+      const pageData = { title: fileSlug, slug: fileSlug }; // Fallback data
+      
+      const schemaStrategy = SchemaMapper.getStrategy(pageType);
+      const pageSchemas = [];
+      
+      if (schemaStrategy.includes('Organization')) pageSchemas.push(SchemaFactory.generateOrganization());
+      if (schemaStrategy.includes('WebSite')) pageSchemas.push(SchemaFactory.generateWebSite());
+      if (schemaStrategy.includes('MedicalClinic')) pageSchemas.push(SchemaFactory.generateMedicalClinic());
+      if (schemaStrategy.includes('WebPage')) pageSchemas.push(SchemaFactory.generateWebPage(`${SchemaFactory.getBaseUrl()}/${fileSlug}`, fileSlug, ''));
+      if (schemaStrategy.includes('Article')) {
+        const articleData = SchemaMapper.mapArticleData(pageData);
+        pageSchemas.push(SchemaFactory.generateArticle(articleData));
+      }
+      
+      const pageUrl = `${SchemaFactory.getBaseUrl()}/${fileSlug}`;
+      const validationResults = SchemaValidator.validate(pageSchemas, pageUrl);
+      
+      schemaReportData.pagesChecked++;
+      schemaReportData.totalErrors += validationResults.errors.length;
+      schemaReportData.totalWarnings += validationResults.warnings.length;
+      schemaReportData.details.push({
+        url: pageUrl,
+        schemas: validationResults.stats.types,
+        errors: validationResults.errors,
+        warnings: validationResults.warnings
+      });
+
+      // Fail Build on Critical Schema Errors
+      if (validationResults.errors.length > 0) {
+        throw new Error(`CRITICAL SCHEMA ERROR ở trang ${fileSlug}:\n${validationResults.errors.join('\n')}`);
+      }
+
       compiledHtml = compiledHtml
         .replace(/<!--\s*INJECT_SITE_NAME\s*-->/g, siteConfig.name)
         .replace(/<!--\s*INJECT_BRAND\s*-->/g, siteConfig.name)
@@ -86,7 +130,7 @@ async function runBuildPipeline() {
         .replace(/<!--\s*INJECT_HOTLINE\s*-->/g, clinicConfig.hotlineDisplay)
         .replace(/<!--\s*INJECT_ADDRESS\s*-->/g, clinicConfig.address.full)
         .replace(/<!--\s*INJECT_ZALO\s*-->/g, clinicConfig.zaloLink)
-        .replace(/<!--\s*INJECT_SEO_TAGS\s*-->/g, SEOManager.generateMetaTags());
+        .replace(/<!--\s*INJECT_SEO_TAGS\s*-->/g, SEOManager.generateMetaTags(pageData, pageSchemas));
       return compiledHtml;
     }
 
@@ -100,11 +144,19 @@ async function runBuildPipeline() {
       errorLogs: []
     };
 
+    const schemaReportData = {
+      pagesChecked: 0,
+      totalErrors: 0,
+      totalWarnings: 0,
+      details: []
+    };
+
     htmlFiles.forEach(file => {
       try {
         let content = fs.readFileSync(path.join(pagesDir, file), 'utf8');
-        content = injectComponentsAndVars(content); // First pass
-        content = injectComponentsAndVars(content); // Second pass for nested
+        const fileSlug = file.replace('.html', '');
+        content = injectComponentsAndVars(content, fileSlug); // First pass
+        content = injectComponentsAndVars(content, fileSlug); // Second pass for nested
         
         // Inject Security Headers
         content = content.replace('</head>', `${SecurityManager.generateSecurityMetaTags()}</head>`);
@@ -125,10 +177,11 @@ async function runBuildPipeline() {
       }
     });
 
-    // Generate Build Manifest & QA Report
+    // Generate Build Manifest & QA Reports
     buildStats.duration = Date.now() - startTime;
     SecurityManager.generateManifest(DIST_DIR, buildStats);
     QAReportGenerator.generate(DIST_DIR, buildStats);
+    SchemaReportGenerator.generate(schemaReportData);
 
     // Step 5: Sitemap & Feed
     const pagesForSitemap = htmlFiles.map(file => {

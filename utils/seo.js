@@ -48,9 +48,9 @@ export class SEOManager {
   }
 
   /**
-   * Khởi tạo Dynamic Metadata Layer
+   * Khởi tạo Dynamic Metadata Layer & JSON-LD
    */
-  static generateMetaTags(pageData = {}) {
+  static generateMetaTags(pageData = {}, pageSchemas = []) {
     const title = pageData.normalized?.title || pageData.seoTitle || pageData.title || seoConfig.defaultTitle;
     const description = pageData.normalized?.description || pageData.seoDescription || pageData.excerpt || seoConfig.defaultDescription;
     const ogImage = pageData.normalized?.featuredImage || pageData.featuredImage?.url || seoConfig.defaultOGImage;
@@ -90,6 +90,34 @@ export class SEOManager {
       <meta name="twitter:title" content="${title}">
       <meta name="twitter:description" content="${description}">
       <meta name="twitter:image" content="${ogImage}">
+      ${this.generateGraphSchema(pageSchemas)}
     `;
+  }
+
+  /**
+   * Tạo @graph Schema và khử trùng lặp
+   */
+  static generateGraphSchema(schemas = []) {
+    if (!schemas || schemas.length === 0) return '';
+    
+    // Flatten in case schemas contain arrays (like Article returns [Author, Reviewer, Image, Article])
+    const flatSchemas = schemas.flat(Infinity).filter(Boolean);
+    
+    // Deduplicate by @id
+    const seenIds = new Set();
+    const uniqueSchemas = flatSchemas.filter(schema => {
+      if (schema["@id"]) {
+        if (seenIds.has(schema["@id"])) return false;
+        seenIds.add(schema["@id"]);
+      }
+      return true;
+    });
+
+    const graphObject = {
+      "@context": "https://schema.org",
+      "@graph": uniqueSchemas
+    };
+
+    return `\n      <!-- Enterprise Schema Graph -->\n      <script type="application/ld+json">\n${JSON.stringify(graphObject, null, 2)}\n      </script>`;
   }
 }
