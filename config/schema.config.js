@@ -72,6 +72,7 @@ export const schemaConfig = {
       sameAs: [siteConfig.url]
     },
     image: {
+      url: `${siteConfig.url}/assets/images/default-schema.jpg`,
       width: 1200,
       height: 630,
       caption: "Hình ảnh y khoa minh họa"
