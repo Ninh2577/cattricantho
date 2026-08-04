@@ -191,7 +191,14 @@ async function runBuildPipeline() {
         const singleTemplatePath = path.join(pagesDir, 'single.html');
         if (fs.existsSync(singleTemplatePath)) {
           const singleTemplate = fs.readFileSync(singleTemplatePath, 'utf8');
-          const articlesByCategory = {};
+          const articlesByCategory = {
+            'tri': { name: 'Trĩ', slug: 'tri', articles: [] },
+            'tri-noi': { name: 'Trĩ nội', slug: 'tri-noi', articles: [] },
+            'tri-ngoai': { name: 'Trĩ ngoại', slug: 'tri-ngoai', articles: [] },
+            'tri-hon-hop': { name: 'Trĩ hỗn hợp', slug: 'tri-hon-hop', articles: [] },
+            'ro-hau-mon': { name: 'Rò hậu môn', slug: 'ro-hau-mon', articles: [] },
+          };
+          
           for (const article of cmsArticles) {
             try {
               const articleSlug = article.slug || `bai-viet-${article.id}`;
@@ -214,25 +221,11 @@ async function runBuildPipeline() {
                 'tri_hon_hop': 'tri-hon-hop',
                 'ro_hau_mon': 'ro-hau-mon'
               };
-              const catNameMap = {
-                'tri': 'Trĩ',
-                'tri_noi': 'Trĩ nội',
-                'tri_ngoai': 'Trĩ ngoại',
-                'tri_hon_hop': 'Trĩ hỗn hợp',
-                'ro_hau_mon': 'Rò hậu môn'
-              };
+              const categorySlug = catSlugMap[rawCat] || 'tri';
               
-              const categorySlug = catSlugMap[rawCat] || 'kien-thuc';
-              const categoryName = catNameMap[rawCat] || 'Kiến Thức Y Khoa';
-              
-              if (!articlesByCategory[categorySlug]) {
-                articlesByCategory[categorySlug] = {
-                  name: categoryName,
-                  slug: categorySlug,
-                  articles: []
-                };
+              if (articlesByCategory[categorySlug]) {
+                articlesByCategory[categorySlug].articles.push(article);
               }
-              articlesByCategory[categorySlug].articles.push(article);
               
               let articleHtml = singleTemplate;
               
@@ -253,7 +246,7 @@ async function runBuildPipeline() {
 
               articleHtml = articleHtml
                 .replace(/<!-- INJECT_ARTICLE_TITLE -->/g, article.title || '')
-                .replace(/<!-- INJECT_ARTICLE_CATEGORY -->/g, categoryName)
+                .replace(/<!-- INJECT_ARTICLE_CATEGORY -->/g, articlesByCategory[categorySlug]?.name || 'Trĩ')
                 .replace(/<!-- INJECT_ARTICLE_EXCERPT -->/g, article.tomtat || '')
                 .replace(/<!-- INJECT_ARTICLE_CONTENT -->/g, article.noiDung?.html || '')
                 .replace(/<!-- INJECT_ARTICLE_FEATURED_IMAGE -->/g, featuredImageHtml)
@@ -284,25 +277,39 @@ async function runBuildPipeline() {
               catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_DESC -->/g, `Danh sách các bài viết y khoa thuộc chuyên mục ${catData.name}.`);
               
               let articlesHtml = '';
-              for (const art of catData.articles) {
-                const dateFormatted = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
-                const img = art.anh?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
-                articlesHtml += `
-            <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
-              <a href="/${art.slug}" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
-                <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
-                  <img src="${img}" alt="${art.title}" style="border-radius: var(--radius-sm); object-fit: cover; height: 160px; width: 100%;">
-                </div>
-                <div class="skmd-article__content">
-                  <div class="skmd-article__meta">
-                    <span class="skmd-badge skmd-badge--primary">${catData.name}</span>
-                    <span class="skmd-article__date" style="margin-left: 12px; font-size: 0.875rem; color: var(--color-text-light);">${dateFormatted}</span>
+              
+              if (catData.articles.length === 0) {
+                articlesHtml = `
+            <div style="text-align: center; padding: 64px 24px; background: var(--color-white); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: 24px;">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px; color: var(--color-text-light);">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                <line x1="4" y1="22" x2="20" y2="2"></line>
+              </svg>
+              <h3 style="font-size: 1.5rem; margin-bottom: 8px; color: var(--color-text-dark);">Chưa có bài viết</h3>
+              <p style="color: var(--color-text-main);">Hãy quay lại sau nhé!</p>
+            </div>`;
+              } else {
+                for (const art of catData.articles) {
+                  const dateFormatted = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
+                  const img = art.anh?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
+                  articlesHtml += `
+              <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
+                <a href="/${art.slug}" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
+                  <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
+                    <img src="${img}" alt="${art.title}" style="border-radius: var(--radius-sm); object-fit: cover; height: 160px; width: 100%;">
                   </div>
-                  <h3 class="skmd-article__title" style="font-size: 1.25rem; margin: 12px 0;">${art.title}</h3>
-                  <p class="skmd-article__excerpt" style="color: var(--color-text-main); line-height: 1.6;">${art.tomtat || ''}</p>
-                </div>
-              </a>
-            </article>`;
+                  <div class="skmd-article__content">
+                    <div class="skmd-article__meta">
+                      <span class="skmd-badge skmd-badge--primary">${catData.name}</span>
+                      <span class="skmd-article__date" style="margin-left: 12px; font-size: 0.875rem; color: var(--color-text-light);">${dateFormatted}</span>
+                    </div>
+                    <h3 class="skmd-article__title" style="font-size: 1.25rem; margin: 12px 0;">${art.title}</h3>
+                    <p class="skmd-article__excerpt" style="color: var(--color-text-main); line-height: 1.6;">${art.tomtat || ''}</p>
+                  </div>
+                </a>
+              </article>`;
+                }
               }
               catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_ARTICLES -->/g, articlesHtml);
               

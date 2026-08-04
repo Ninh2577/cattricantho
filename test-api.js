@@ -1,12 +1,14 @@
 import { apiService } from './services/api.js';
 
-async function test() {
+async function check() {
   try {
-    const articles = await apiService.getAllArticles();
-    console.log("Found articles:", articles.length);
-    console.log(JSON.stringify(articles, null, 2));
-  } catch(e) {
+    const res = await apiService.getAllArticles();
+    console.log("Articles:", res.length);
+    if(res.length > 0) {
+      console.log("First article categories:", res[0].danhMuc);
+    }
+  } catch (e) {
     console.error("Error:", e);
   }
 }
-test();
+check();
