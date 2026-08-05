@@ -65,8 +65,85 @@ async function runBuildPipeline() {
       }
     });
 
-    // Step 3: Load CMS Data & Normalize (To be implemented fully in Phase 2)
-    // ...
+    // Step 3: Load CMS Data & Normalize
+    Logger.info('Orchestrator', 'Đang kết nối Hygraph CMS để đồng bộ bài viết tự động...');
+    let cmsArticles = [];
+    let latestArticlesHtml = { featured: '', smalls: '' };
+    const articlesByCategory = {
+      'tri': { name: 'Trĩ', slug: 'tri', articles: [] },
+      'tri-noi': { name: 'Trĩ nội', slug: 'tri-noi', articles: [] },
+      'tri-ngoai': { name: 'Trĩ ngoại', slug: 'tri-ngoai', articles: [] },
+      'tri-hon-hop': { name: 'Trĩ hỗn hợp', slug: 'tri-hon-hop', articles: [] },
+      'ro-hau-mon': { name: 'Rò hậu môn', slug: 'ro-hau-mon', articles: [] },
+      'kien-thuc': { name: 'Tất cả bài viết', slug: 'kien-thuc', articles: [] },
+    };
+
+    try {
+      cmsArticles = await apiService.getAllArticles();
+      if (cmsArticles) {
+        Logger.info('Orchestrator', `Đã tìm thấy ${cmsArticles.length} bài viết từ Hygraph CMS.`);
+        
+        const catSlugMap = {
+          'tri': 'tri',
+          'tri_noi': 'tri-noi',
+          'tri_ngoai': 'tri-ngoai',
+          'tri_hon_hop': 'tri-hon-hop',
+          'ro_hau_mon': 'ro-hau-mon'
+        };
+        
+        // Categorize articles
+        for (const article of cmsArticles) {
+          const rawCat = article.danhMuc || 'tri';
+          const categorySlug = catSlugMap[rawCat] || 'tri';
+          if (articlesByCategory[categorySlug]) {
+            articlesByCategory[categorySlug].articles.push(article);
+          }
+          // Add to 'all' category
+          articlesByCategory['kien-thuc'].articles.push(article);
+        }
+        
+        // Build Latest Articles HTML for Homepage (Carousel) and Sidebar
+        const latestArticles = [...cmsArticles].sort((a, b) => new Date(b.ngayDang) - new Date(a.ngayDang)).slice(0, 9);
+        if (latestArticles.length > 0) {
+          latestArticlesHtml.sidebar = latestArticles.slice(0, 5).map(art => {
+            const aSlug = art.slug || `bai-viet-${art.id}`;
+            const aImg = (Array.isArray(art.anh) ? art.anh[0]?.url : art.anh?.url) || 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=300';
+            return `
+              <a href="/${aSlug}" style="display: flex; gap: 12px; text-decoration: none; color: inherit; align-items: flex-start;">
+                <img src="${aImg}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="${art.title}">
+                <h4 style="margin: 0; font-size: 0.95rem; line-height: 1.4; color: var(--color-text-main); font-weight: 500;">${art.title}</h4>
+              </a>
+            `;
+          }).join('');
+
+          latestArticlesHtml.carousel = latestArticles.map(art => {
+            const aSlug = art.slug || `bai-viet-${art.id}`;
+            const aDate = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
+            const aImg = (Array.isArray(art.anh) ? art.anh[0]?.url : art.anh?.url) || 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=300';
+            const aCatName = articlesByCategory[catSlugMap[art.danhMuc || 'tri'] || 'tri']?.name || 'Tin Tức';
+            
+            return `
+        <article class="skmd-article-card skmd-carousel-slide" style="flex: 0 0 calc(33.333% - 16px); min-width: 280px; box-sizing: border-box; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden;">
+          <a href="/${aSlug}" class="skmd-article__link" style="text-decoration: none; color: inherit; display: block; height: 100%;">
+            <div class="skmd-article__image skmd-ratio skmd-ratio--4-3" style="width: 100%; aspect-ratio: 4/3; overflow: hidden; position: relative;">
+              <img src="${aImg}" alt="${art.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="skmd-article__content" style="padding: 16px;">
+              <div class="skmd-article__meta" style="margin-bottom: 8px;">
+                <span class="skmd-badge skmd-badge--outline" style="font-size: 0.75rem; padding: 2px 8px; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 12px;">${aCatName}</span>
+                <span class="skmd-article__date" style="font-size: 0.75rem; color: var(--color-text-light); margin-left: 8px;">${aDate}</span>
+              </div>
+              <h4 class="skmd-article__title" style="font-size: 1.125rem; margin: 0 0 8px 0; color: var(--color-text-dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${art.title}</h4>
+              <p class="skmd-article__excerpt" style="font-size: 0.875rem; color: var(--color-text-main); margin: 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${art.tomtat || ''}</p>
+            </div>
+          </a>
+        </article>`;
+          }).join('');
+        }
+      }
+    } catch (err) {
+      Logger.error('Orchestrator', 'Lỗi khi tải dữ liệu CMS:', err);
+    }
 
     // Step 4: HTML Generator & Metadata Injector
     Logger.info('Orchestrator', 'Đang biên dịch HTML và nhúng Metadata...');
@@ -135,6 +212,7 @@ async function runBuildPipeline() {
         .replace(/<!--\s*INJECT_HOTLINE\s*-->/g, clinicConfig.hotlineDisplay)
         .replace(/<!--\s*INJECT_ADDRESS\s*-->/g, clinicConfig.address.full)
         .replace(/<!--\s*INJECT_ZALO\s*-->/g, clinicConfig.zaloLink)
+        .replace(/<!--\s*INJECT_CAROUSEL_ARTICLES\s*-->/g, latestArticlesHtml.carousel || '')
         .replace(/<!--\s*INJECT_SEO_TAGS\s*-->/g, SEOManager.generateMetaTags(pageData, pageSchemas));
       return compiledHtml;
     }
@@ -183,21 +261,12 @@ async function runBuildPipeline() {
     });
 
     // Step 4.5: Hygraph CMS Dynamic SSG Article Builder
-    Logger.info('Orchestrator', 'Đang kết nối Hygraph CMS để đồng bộ bài viết tự động...');
+    Logger.info('Orchestrator', 'Đang tạo các trang tĩnh bài viết (Single & Category)...');
     try {
-      const cmsArticles = await apiService.getAllArticles();
-      if (cmsArticles) {
-        Logger.info('Orchestrator', `Đã tìm thấy ${cmsArticles.length} bài viết từ Hygraph CMS. Đang tạo trang tĩnh...`);
+      if (cmsArticles && cmsArticles.length > 0) {
         const singleTemplatePath = path.join(pagesDir, 'single.html');
         if (fs.existsSync(singleTemplatePath)) {
           const singleTemplate = fs.readFileSync(singleTemplatePath, 'utf8');
-          const articlesByCategory = {
-            'tri': { name: 'Trĩ', slug: 'tri', articles: [] },
-            'tri-noi': { name: 'Trĩ nội', slug: 'tri-noi', articles: [] },
-            'tri-ngoai': { name: 'Trĩ ngoại', slug: 'tri-ngoai', articles: [] },
-            'tri-hon-hop': { name: 'Trĩ hỗn hợp', slug: 'tri-hon-hop', articles: [] },
-            'ro-hau-mon': { name: 'Rò hậu môn', slug: 'ro-hau-mon', articles: [] },
-          };
           
           for (const article of cmsArticles) {
             try {
@@ -223,23 +292,20 @@ async function runBuildPipeline() {
               };
               const categorySlug = catSlugMap[rawCat] || 'tri';
               
-              if (articlesByCategory[categorySlug]) {
-                articlesByCategory[categorySlug].articles.push(article);
-              }
-              
               let articleHtml = singleTemplate;
               
               // ---- INJECT CMS DATA VÀO PLACEHOLDERS ----
-              const authorName = article.tacGia || 'Đội ngũ y khoa';
+              const authorName = article.createdBy?.name || 'Đội ngũ y khoa';
+              const authorInitials = authorName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
               const authorAvatar = 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=100&h=100';
-              const reviewerName = authorName;
+              const reviewerName = 'Đội ngũ y khoa';
               const reviewerRole = 'Chuyên gia y khoa';
               const reviewerAvatar = authorAvatar;
               const wordCount = article.noiDung?.text?.split(' ').length || 0;
               const readingTime = article.thoiGianDoc || Math.max(1, Math.ceil(wordCount / 200));
               const dateFormatted = article.ngayDang 
                 ? new Date(article.ngayDang).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
-                : '';
+                : new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
               const featuredImageHtml = article.anh?.url 
                 ? `<img src="${article.anh.url}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;">`
                 : '';
@@ -254,10 +320,12 @@ async function runBuildPipeline() {
                 .replace(/<!-- INJECT_ARTICLE_DATE -->/g, dateFormatted)
                 .replace(/<!-- INJECT_READING_TIME -->/g, readingTime)
                 .replace(/<!-- INJECT_AUTHOR_NAME -->/g, authorName)
+                .replace(/<!-- INJECT_AUTHOR_INITIALS -->/g, authorInitials)
                 .replace(/<!-- INJECT_AUTHOR_AVATAR -->/g, authorAvatar)
                 .replace(/<!-- INJECT_REVIEWER_NAME -->/g, reviewerName)
                 .replace(/<!-- INJECT_REVIEWER_ROLE -->/g, reviewerRole)
-                .replace(/<!-- INJECT_REVIEWER_AVATAR -->/g, reviewerAvatar);
+                .replace(/<!-- INJECT_REVIEWER_AVATAR -->/g, reviewerAvatar)
+                .replace(/<!-- INJECT_SIDEBAR_LATEST -->/g, latestArticlesHtml.sidebar || '');
 
               // Inject components & SEO tags with article page data
               articleHtml = injectComponentsAndVars(articleHtml, articleSlug);
@@ -273,55 +341,76 @@ async function runBuildPipeline() {
           if (fs.existsSync(categoryTemplatePath)) {
             const categoryTemplate = fs.readFileSync(categoryTemplatePath, 'utf8');
             for (const [catSlug, catData] of Object.entries(articlesByCategory)) {
-              let catHtml = categoryTemplate;
-              catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_TITLE -->/g, catData.name);
-              catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_DESC -->/g, `Danh sách các bài viết y khoa thuộc chuyên mục ${catData.name}.`);
+              const pageSize = 10;
+              const totalPages = Math.ceil(catData.articles.length / pageSize) || 1;
               
-              // Active State for Category Pills
-              const activeCatKey = catSlug.replace(/-/g, '_').toUpperCase();
-              catHtml = catHtml.replace(`<!-- ACTIVE_${activeCatKey} -->`, 'background: var(--color-primary) !important; color: white !important; border-color: var(--color-primary) !important;');
-              catHtml = catHtml.replace(/<!-- ACTIVE_[A-Z_]+ -->/g, ''); // Xóa các biến active còn lại
-              
-              let articlesHtml = '';
-              
-              if (catData.articles.length === 0) {
-                articlesHtml = `
-            <div style="text-align: center; padding: 64px 24px; background: var(--color-white); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: 24px;">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px; color: var(--color-text-light);">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                <line x1="4" y1="22" x2="20" y2="2"></line>
-              </svg>
-              <h3 style="font-size: 1.5rem; margin-bottom: 8px; color: var(--color-text-dark);">Chưa có bài viết</h3>
-              <p style="color: var(--color-text-main);">Hãy quay lại sau nhé!</p>
-            </div>`;
-              } else {
-                for (const art of catData.articles) {
-                  const dateFormatted = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
-                  const img = art.anh?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
-                  articlesHtml += `
-              <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
-                <a href="/${art.slug}" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
-                  <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
-                    <img src="${img}" alt="${art.title}" style="border-radius: var(--radius-sm); object-fit: cover; height: 160px; width: 100%;">
-                  </div>
-                  <div class="skmd-article__content">
-                    <div class="skmd-article__meta">
-                      <span class="skmd-badge skmd-badge--primary">${catData.name}</span>
-                      <span class="skmd-article__date" style="margin-left: 12px; font-size: 0.875rem; color: var(--color-text-light);">${dateFormatted}</span>
+              for (let page = 1; page <= totalPages; page++) {
+                let currentPageHtml = categoryTemplate;
+                currentPageHtml = currentPageHtml.replace(/<!-- INJECT_CATEGORY_TITLE -->/g, catData.name);
+                currentPageHtml = currentPageHtml.replace(/<!-- INJECT_CATEGORY_DESC -->/g, `Danh sách các bài viết y khoa thuộc chuyên mục ${catData.name}.`);
+                
+                const activeCatKey = catSlug.replace(/-/g, '_').toUpperCase();
+                currentPageHtml = currentPageHtml.replace(`<!-- ACTIVE_${activeCatKey} -->`, 'background: var(--color-primary) !important; color: white !important; border-color: var(--color-primary) !important;');
+                currentPageHtml = currentPageHtml.replace(/<!-- ACTIVE_[A-Z_]+ -->/g, ''); 
+                
+                let articlesHtml = '';
+                if (catData.articles.length === 0) {
+                  articlesHtml = `
+              <div style="text-align: center; padding: 64px 24px; background: var(--color-white); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: 24px;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px; color: var(--color-text-light);">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  <line x1="4" y1="22" x2="20" y2="2"></line>
+                </svg>
+                <h3 style="font-size: 1.5rem; margin-bottom: 8px; color: var(--color-text-dark);">Chưa có bài viết</h3>
+                <p style="color: var(--color-text-main);">Hãy quay lại sau nhé!</p>
+              </div>`;
+                } else {
+                  const startIdx = (page - 1) * pageSize;
+                  const endIdx = startIdx + pageSize;
+                  const pageArticles = catData.articles.slice(startIdx, endIdx);
+                  
+                  for (const art of pageArticles) {
+                    const dateFormatted = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
+                    const img = art.anh?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
+                    articlesHtml += `
+                <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
+                  <a href="/${art.slug}" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
+                    <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
+                      <img src="${img}" alt="${art.title}" style="border-radius: var(--radius-sm); object-fit: cover; height: 160px; width: 100%;">
                     </div>
-                    <h3 class="skmd-article__title" style="font-size: 1.25rem; margin: 12px 0;">${art.title}</h3>
-                    <p class="skmd-article__excerpt" style="color: var(--color-text-main); line-height: 1.6;">${art.tomtat || ''}</p>
-                  </div>
-                </a>
-              </article>`;
+                    <div class="skmd-article__content">
+                      <div class="skmd-article__meta">
+                        <span class="skmd-badge skmd-badge--primary">${catData.name}</span>
+                        <span class="skmd-article__date" style="margin-left: 12px; font-size: 0.875rem; color: var(--color-text-light);">${dateFormatted}</span>
+                      </div>
+                      <h3 class="skmd-article__title" style="font-size: 1.25rem; margin: 12px 0;">${art.title}</h3>
+                      <p class="skmd-article__excerpt" style="color: var(--color-text-main); line-height: 1.6;">${art.tomtat || ''}</p>
+                    </div>
+                  </a>
+                </article>`;
+                  }
                 }
+                
+                let paginationHtml = '';
+                if (totalPages > 1) {
+                  paginationHtml += '<div style="display: flex; justify-content: center; gap: 8px; margin-top: 40px;">';
+                  for (let i = 1; i <= totalPages; i++) {
+                    const pageUrl = i === 1 ? `/${catSlug}` : `/${catSlug}-page-${i}`;
+                    const btnClass = i === page ? 'skmd-btn skmd-btn--primary' : 'skmd-btn skmd-btn--outline';
+                    paginationHtml += `<a href="${pageUrl}" class="${btnClass}" style="min-width:40px; text-align:center;">${i}</a>`;
+                  }
+                  paginationHtml += '</div>';
+                }
+                
+                currentPageHtml = currentPageHtml.replace(/<!-- INJECT_CATEGORY_ARTICLES -->/g, articlesHtml);
+                currentPageHtml = currentPageHtml.replace(/<!-- INJECT_PAGINATION -->/g, paginationHtml);
+                
+                const currentSlug = page === 1 ? catSlug : `${catSlug}-page-${page}`;
+                currentPageHtml = injectComponentsAndVars(currentPageHtml, currentSlug);
+                fs.writeFileSync(path.join(distPagesDir, `${currentSlug}.html`), currentPageHtml);
+                buildStats.generated++;
               }
-              catHtml = catHtml.replace(/<!-- INJECT_CATEGORY_ARTICLES -->/g, articlesHtml);
-              
-              catHtml = injectComponentsAndVars(catHtml, catSlug);
-              fs.writeFileSync(path.join(distPagesDir, `${catSlug}.html`), catHtml);
-              buildStats.generated++;
             }
           }
         }

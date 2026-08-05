@@ -11,10 +11,9 @@
   <style>
     /* Premium Article CSS */
     .skmd-article-hero {
-      background: linear-gradient(135deg, var(--color-bg-offset) 0%, var(--color-white) 100%);
-      padding: 60px 0;
-      border-bottom: 1px solid var(--color-border);
-      margin-bottom: 40px;
+      background: var(--color-white);
+      padding: 32px 0 16px;
+      margin-bottom: 24px;
     }
     
     .skmd-article-meta {
@@ -22,10 +21,10 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      margin-top: 24px;
+      gap: 12px;
+      margin-top: 16px;
       color: var(--color-text-light);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
     .skmd-article-author {
       display: flex;
@@ -49,27 +48,31 @@
       color: var(--color-text-main);
       max-width: 800px;
       margin: 0 auto;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
     
     /* Typography Enhancements */
     .skmd-article-body h2 {
-      font-size: 1.75rem;
-      color: var(--color-primary-dark);
-      margin-top: 48px;
-      margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--color-secondary);
-      position: relative;
+      font-size: 1.5rem;
+      color: var(--color-primary);
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 0;
+      border-bottom: none;
+      font-weight: 700;
     }
     .skmd-article-body h3 {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       color: var(--color-text-dark);
-      margin-top: 32px;
-      margin-bottom: 16px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      font-weight: 600;
     }
     
     .skmd-article-body p {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     
     .skmd-article-body img {
@@ -108,10 +111,13 @@
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       padding: 24px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    .skmd-sidebar-sticky {
       position: sticky;
       top: 100px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
     .skmd-sidebar-widget__title {
       font-size: 1.25rem;
@@ -121,37 +127,50 @@
       padding-bottom: 8px;
     }
     .skmd-toc {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      list-style: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 2px !important;
+      margin: 0 !important;
+      padding: 0 !important;
       max-height: calc(100vh - 250px);
       overflow-y: auto;
-      padding-right: 8px;
+      padding-right: 8px !important;
     }
     
     /* Scrollbar for TOC */
     .skmd-toc::-webkit-scrollbar { width: 4px; }
     .skmd-toc::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
     
+    .skmd-toc li {
+      margin: 0 !important;
+      padding: 0 !important;
+      line-height: 1.2 !important;
+    }
+
     .skmd-toc li a {
-      color: var(--color-text-light);
-      text-decoration: none;
-      display: block;
-      font-size: 0.95rem;
-      line-height: 1.5;
+      color: var(--color-text-light) !important;
+      text-decoration: none !important;
+      display: block !important;
+      font-size: 0.8rem !important;
+      line-height: 1.2 !important;
       transition: all 0.2s ease;
-      border-left: 2px solid transparent;
-      padding-left: 12px;
+      border-left: 2px solid transparent !important;
+      padding: 4px 0 4px 12px !important;
+      margin: 0 !important;
+      white-space: normal !important; /* Ngăn chặn newlines ẩn tạo khoảng trắng dọc */
+      word-break: break-word !important;
     }
+    
     .skmd-toc li a:hover, .skmd-toc li a.active {
-      color: var(--color-primary);
-      border-left-color: var(--color-primary);
-      font-weight: 500;
+      color: var(--color-primary) !important;
+      border-left-color: var(--color-primary) !important;
+      font-weight: 600 !important;
     }
+    
     .skmd-toc li.toc-h3 a {
-      padding-left: 24px;
-      font-size: 0.85rem;
+      padding-left: 24px !important;
+      font-size: 0.75rem !important;
     }
 
     /* Premium Author Card */
@@ -171,6 +190,77 @@
       transform: translateY(-4px);
       box-shadow: 0 16px 40px rgba(0,0,0,0.08);
     }
+    /* Share Bar CSS */
+    .skmd-article-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .skmd-share-bar {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .skmd-share-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-text-light);
+      text-transform: uppercase;
+    }
+    .skmd-share-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-dark);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .skmd-share-btn:hover {
+      background: var(--color-bg-offset);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    
+    @media(min-width: 1024px) {
+      .skmd-article-main {
+        position: relative;
+        min-width: 0;
+      }
+      .skmd-share-bar-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -70px; /* Push it further to accommodate the wider width */
+        width: 64px; /* Wider to fit text on one line */
+        pointer-events: none;
+        z-index: 10;
+      }
+      .skmd-share-title {
+        white-space: nowrap;
+        margin-bottom: 8px; /* Padding for icons below */
+      }
+      .skmd-share-bar {
+        position: sticky;
+        top: 120px;
+        flex-direction: column;
+        margin-bottom: 0;
+        pointer-events: auto;
+      }
+      .skmd-article-body {
+        max-width: 760px;
+        margin: 0 auto;
+        padding-left: 0;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+    }
   </style>
 </head>
 <body data-theme="blue">
@@ -178,42 +268,78 @@
   
   <main id="main-content">
     
-    <!-- Hero Section -->
-    <header class="skmd-article-hero">
-      <div class="skmd-container" style="text-align: center; max-width: 900px;">
-        
-        <!-- Breadcrumb -->
-        <nav class="skmd-breadcrumb" style="margin-bottom: 24px; justify-content: center;">
-          <a href="/" style="color: var(--color-text-main); text-decoration: none;">Trang Chủ</a> &rsaquo; 
-          <a href="/<!-- INJECT_CATEGORY_SLUG -->" style="color: var(--color-primary); text-decoration: none;"><!-- INJECT_ARTICLE_CATEGORY --></a>
-        </nav>
-
-        <span class="skmd-badge skmd-badge--primary" style="margin-bottom: 16px;"><!-- INJECT_ARTICLE_CATEGORY --></span>
-        
-        <h1 class="skmd-heading-1" style="font-size: 2.75rem; line-height: 1.3; color: var(--color-primary-dark);"><!-- INJECT_ARTICLE_TITLE --></h1>
-        
-        <div class="skmd-article-meta">
-          <div class="skmd-article-author">
-            <img src="<!-- INJECT_AUTHOR_AVATAR -->" alt="<!-- INJECT_AUTHOR_NAME -->">
-            <span><!-- INJECT_AUTHOR_NAME --></span>
-          </div>
-          <span>|</span>
-          <span><i class="icon-calendar"></i> <!-- INJECT_ARTICLE_DATE --></span>
-          <span>|</span>
-          <span><i class="icon-clock"></i> <!-- INJECT_READING_TIME --> phút đọc</span>
-          <span>|</span>
-          <span style="color: var(--color-success); font-weight: 500;"><i class="icon-check"></i> Đã kiểm duyệt y khoa</span>
-        </div>
-      </div>
-    </header>
-
-    <div class="skmd-container skmd-section" style="padding-top: 0;">
+    <div class="skmd-container skmd-section">
       <div class="skmd-layout-sidebar">
         
         <!-- MAIN ARTICLE -->
-         <article class="skmd-article">
+         <article class="skmd-article-main">
           
+          <!-- Article Header (Full width of main column) -->
+          <header class="skmd-article-header" style="margin: 0 auto 32px; max-width: 760px;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+              <nav class="skmd-breadcrumb" style="font-size: 0.85rem; color: #6b7280; margin: 0;">
+                <a href="/" style="color: inherit; text-decoration: none;">Trang Chủ</a> &gt; 
+                <span style="color: inherit;">Chuyên Mục</span> &gt; 
+                <a href="/<!-- INJECT_CATEGORY_SLUG -->" style="color: #0b9e4a; font-weight: 700; text-decoration: none;"><!-- INJECT_ARTICLE_CATEGORY --></a>
+              </nav>
+              
+              <div>
+                <span style="display: inline-flex; align-items: center; gap: 6px; background: #eef2ff; color: #4f46e5; padding: 6px 16px; border-radius: 24px; font-size: 0.85rem; font-weight: 600;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4" stroke="#eef2ff" stroke-width="2" fill="none"></path></svg>
+                  Được kiểm duyệt y khoa
+                </span>
+              </div>
+            </div>
+
+            <h1 class="skmd-heading-1" style="font-size: 2.5rem; line-height: 1.3; color: #111827; margin-bottom: 20px; font-weight: 800; text-align: center;"><!-- INJECT_ARTICLE_TITLE --></h1>
+            
+            <div class="skmd-article-meta" style="justify-content: center; font-size: 0.85rem; color: #6b7280; margin-bottom: 16px; display: flex; gap: 12px; align-items: center;">
+              <span style="display: flex; align-items: center; gap: 4px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> 
+                <!-- INJECT_READING_TIME --> phút
+              </span>
+              <span style="color: #d1d5db;">&bull;</span>
+              <span style="display: flex; align-items: center; gap: 4px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 
+                <!-- INJECT_ARTICLE_DATE -->
+              </span>
+              <span style="color: #d1d5db;">&bull;</span>
+              <span style="display: flex; align-items: center; gap: 4px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> 
+                Nguồn uy tín
+              </span>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; gap: 16px; font-size: 0.85rem;">
+              <span style="display: flex; align-items: center; gap: 6px;">
+                <span style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; background: #e8f5e9; color: #0b9e4a; border-radius: 50%; font-size: 0.65rem; font-weight: bold;"><!-- INJECT_AUTHOR_INITIALS --></span>
+                <span style="color: #0b9e4a; font-weight: 700;"><!-- INJECT_AUTHOR_NAME --></span>
+                <span style="color: #9ca3af;">(Biên tập)</span>
+              </span>
+              
+              <span style="display: flex; align-items: center; gap: 6px; color: #4f46e5; font-weight: 600;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; background: #eef2ff; border-radius: 50%; width: 20px; height: 20px;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </span>
+                Tham vấn: <!-- INJECT_REVIEWER_NAME -->
+              </span>
+            </div>
+          </header>
+
+          <!-- Sticky Share Bar -->
+          <div class="skmd-share-bar-container">
+            <div class="skmd-share-bar">
+              <span class="skmd-share-title">Chia Sẻ</span>
+              <a href="#" class="skmd-share-btn" aria-label="Share on Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+              <a href="#" class="skmd-share-btn" aria-label="Share on X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4l11.733 16h4.267l-11.733 -16zM4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" stroke="currentColor" stroke-width="2"></path></svg></a>
+              <a href="#" class="skmd-share-btn" aria-label="Share on LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+              <a href="#" class="skmd-share-btn" aria-label="Copy Link" onclick="navigator.clipboard.writeText(window.location.href); alert('Đã copy đường link bài viết!'); return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a>
+            </div>
+          </div>
+
           <div class="skmd-article-body">
+
             <p class="skmd-text-lead" style="font-size: 1.25rem; color: var(--color-primary); font-weight: 500; margin-bottom: 32px;"><!-- INJECT_ARTICLE_EXCERPT --></p>
             
             <!-- INJECT_ARTICLE_FEATURED_IMAGE -->
@@ -222,20 +348,57 @@
               <!-- INJECT_ARTICLE_CONTENT -->
             </div>
 
-          </div>
-          
-          <!-- Premium Author Box -->
-          <div class="skmd-author-card skmd-article-body">
-            <img src="<!-- INJECT_REVIEWER_AVATAR -->" alt="<!-- INJECT_REVIEWER_NAME -->" style="border-radius:50%; width:100px; height:100px; object-fit:cover; border: 4px solid var(--color-bg-offset); margin: 0;">
-            <div>
-              <h3 style="margin: 0 0 8px 0; font-size: 1.25rem; color: var(--color-primary-dark);">Tham vấn y khoa: <!-- INJECT_REVIEWER_NAME --></h3>
-              <p style="color: var(--color-text-main); margin-bottom:0; font-size: 1rem;"><!-- INJECT_REVIEWER_ROLE --></p>
+            <!-- Editorial Policy & Sources -->
+            <div style="margin-top: 48px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: #fafafa;">
+              <!-- Policy -->
+              <div style="padding: 24px; border-bottom: 1px solid var(--color-border);">
+                <h4 style="display: flex; align-items: center; gap: 8px; font-size: 1.1rem; color: #111827; margin-bottom: 12px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#10b981"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" fill="none"></path></svg>
+                  Chính sách biên tập & Kiểm duyệt y khoa
+                </h4>
+                <p style="font-size: 0.95rem; color: #4b5563; margin: 0; line-height: 1.6;">
+                  Tất cả nội dung trên <strong><!-- INJECT_SITE_NAME --></strong> đều được trải qua quy trình kiểm duyệt nghiêm ngặt bởi Hội đồng Y khoa. Chúng tôi cam kết sử dụng các nguồn tài liệu tham khảo y tế uy tín, tạp chí khoa học và hướng dẫn từ các tổ chức y tế thế giới.
+                </p>
+              </div>
+              
+              <!-- Sources -->
+              <div style="padding: 24px;">
+                <h4 style="display: flex; align-items: center; gap: 8px; font-size: 1.1rem; color: #111827; margin-bottom: 12px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#3b82f6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                  Nguồn tham khảo (Sources)
+                </h4>
+                <ul style="font-size: 0.95rem; color: #4b5563; margin: 0; padding-left: 20px; line-height: 1.6;">
+                  <li style="margin-bottom: 6px;">World Health Organization (WHO) - Health Guidelines.</li>
+                  <li style="margin-bottom: 6px;">National Institutes of Health (NIH) - Research Database.</li>
+                  <li>Harvard Medical School - Health Publications.</li>
+                </ul>
+              </div>
             </div>
+
+            <!-- Author Card -->
+            <div class="skmd-author-card" style="margin-top: 32px; padding: 32px; background: #fff; display: flex; gap: 24px; align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+              <div style="width: 80px; height: 80px; background: #e8f5e9; color: #0b9e4a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; flex-shrink: 0;">
+                <!-- INJECT_AUTHOR_INITIALS -->
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: #0b9e4a; text-transform: uppercase; margin-bottom: 6px;">Chuyên gia nội dung</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 8px 0;"><!-- INJECT_AUTHOR_NAME --></h3>
+                <p style="font-size: 0.95rem; color: #4b5563; margin: 0 0 16px 0; line-height: 1.5;">
+                  Là đội ngũ biên tập viên giàu kinh nghiệm, chuyên tổng hợp và biên soạn các kiến thức y tế phức tạp thành những bài viết dễ hiểu, gần gũi, giúp người đọc dễ dàng áp dụng vào lối sống khỏe mạnh mỗi ngày.
+                </p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <span style="font-size: 0.75rem; padding: 4px 16px; background: #f3f4f6; color: #4b5563; border-radius: 20px; border: 1px solid #e5e7eb;">Dinh dưỡng</span>
+                  <span style="font-size: 0.75rem; padding: 4px 16px; background: #f3f4f6; color: #4b5563; border-radius: 20px; border: 1px solid #e5e7eb;">Lối sống</span>
+                  <span style="font-size: 0.75rem; padding: 4px 16px; background: #f3f4f6; color: #4b5563; border-radius: 20px; border: 1px solid #e5e7eb;">Y tế công cộng</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </article>
 
         <!-- SIDEBAR -->
-        <aside class="skmd-sidebar">
+        <aside class="skmd-sidebar skmd-sidebar-sticky">
           
           <!-- Dynamic Table of Contents -->
           <div class="skmd-sidebar-widget">
@@ -245,8 +408,15 @@
             </ul>
           </div>
 
-          <!-- CTA Widget -->
-          <!-- INJECT_COMPONENT: components/cta.html -->
+          <!-- Latest Articles Widget -->
+          <div class="skmd-sidebar-widget" style="margin-top: 32px; padding: 0; border: none; box-shadow: none; background: transparent;">
+            <h3 class="skmd-sidebar-widget__title" style="font-size: 1.1rem; border-bottom: none; position: relative; margin-bottom: 20px;">
+              <span style="border-bottom: 2px solid var(--color-primary); padding-bottom: 8px;">Bài viết mới nhất</span>
+            </h3>
+            <div class="skmd-sidebar-latest" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- INJECT_SIDEBAR_LATEST -->
+            </div>
+          </div>
 
         </aside>
       </div>

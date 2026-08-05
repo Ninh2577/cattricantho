@@ -30,6 +30,7 @@
 @media (min-width: 1024px) {
   .skmd-layout-sidebar {
     grid-template-columns: 1fr 350px;
+    align-items: start;
   }
 }
 

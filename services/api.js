@@ -52,6 +52,9 @@ class HygraphService {
           }
           tomtat
           tacGia
+          createdBy {
+            name
+          }
           ngayDang
           thoiGianDoc
           danhMuc
@@ -75,6 +78,7 @@ class HygraphService {
           anh { url }
           danhMuc
           tacGia
+          createdBy { name }
           ngayDang
         }
       }
@@ -95,6 +99,7 @@ class HygraphService {
           anh { url }
           danhMuc
           tacGia
+          createdBy { name }
           ngayDang
           thoiGianDoc
           seoTitle

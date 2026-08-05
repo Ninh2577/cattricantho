@@ -1,4 +1,4 @@
-<!-- Home: Latest Articles (Magazine Layout) -->
+<!-- Home: Latest Articles (Carousel Layout) -->
 <section class="skmd-section">
   <div class="skmd-container">
     <div class="skmd-section-header">
@@ -7,78 +7,21 @@
       <p class="skmd-section-desc">Cập nhật những thông tin y tế, phương pháp điều trị và cách phòng ngừa bệnh trĩ mới nhất từ chuyên gia, đã qua kiểm duyệt y khoa.</p>
     </div>
 
-    <div class="skmd-magazine">
+    <div class="skmd-carousel-wrapper" style="overflow: hidden; position: relative; margin-top: 32px; padding: 0 48px;">
       
-      <!-- Featured Article (Left) -->
-      <article class="skmd-article-featured skmd-article-card">
-        <a href="/bai-viet-1" class="skmd-article__link">
-          <div class="skmd-article__image skmd-ratio skmd-ratio--16-10">
-            <img src="https://images.unsplash.com/photo-1620121692029-d088224ddc74?auto=format&fit=crop&q=80&w=800" 
-                 alt="Featured Article" 
-                 loading="lazy">
-            <span class="skmd-badge skmd-badge--featured">Nổi Bật</span>
-          </div>
-          <div class="skmd-article__content">
-            <div class="skmd-article__meta">
-              <span class="skmd-badge skmd-badge--primary">Tin Tức Y Tế</span>
-              <span class="skmd-article__date">Cập nhật: 03/08/2026</span>
-              <span class="skmd-article__readtime"><i class="icon-clock"></i> 5 phút đọc</span>
-            </div>
-            <h3 class="skmd-article__title">Phương pháp PPH trong điều trị cắt trĩ: Đột phá y học ít xâm lấn</h3>
-            <p class="skmd-article__excerpt">Phương pháp PPH (Procedure for Prolapse and Hemorrhoids) đang trở thành tiêu chuẩn vàng trong phẫu thuật cắt trĩ nhờ ưu điểm vượt trội về thời gian phục hồi và mức độ đau đớn được giảm thiểu tối đa...</p>
-          </div>
-        </a>
-      </article>
+      <!-- Prev Button -->
+      <button id="btn-prev-article" aria-label="Previous" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: white; border: 1px solid var(--color-border); box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.4; transition: all 0.3s ease;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
 
-      <!-- Small Articles (Right) -->
-      <div class="skmd-magazine__list">
-        
-        <article class="skmd-article-small skmd-article-card">
-          <a href="/bai-viet-2" class="skmd-article__link">
-            <div class="skmd-article__image skmd-ratio skmd-ratio--4-3">
-              <img src="https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=300" alt="Dấu hiệu nhận biết trĩ" loading="lazy">
-            </div>
-            <div class="skmd-article__content">
-              <div class="skmd-article__meta">
-                <span class="skmd-badge skmd-badge--outline">Triệu Chứng</span>
-                <span class="skmd-article__date">01/08/2026</span>
-              </div>
-              <h4 class="skmd-article__title">5 Dấu hiệu cảnh báo bệnh trĩ bạn không nên bỏ qua</h4>
-            </div>
-          </a>
-        </article>
-
-        <article class="skmd-article-small skmd-article-card">
-          <a href="/bai-viet-3" class="skmd-article__link">
-            <div class="skmd-article__image skmd-ratio skmd-ratio--4-3">
-              <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&q=80&w=300" alt="Chế độ ăn uống" loading="lazy">
-            </div>
-            <div class="skmd-article__content">
-              <div class="skmd-article__meta">
-                <span class="skmd-badge skmd-badge--outline">Phòng Ngừa</span>
-                <span class="skmd-article__date">28/07/2026</span>
-              </div>
-              <h4 class="skmd-article__title">Thực đơn dinh dưỡng dành riêng cho người bệnh trĩ</h4>
-            </div>
-          </a>
-        </article>
-
-        <article class="skmd-article-small skmd-article-card">
-          <a href="/bai-viet-4" class="skmd-article__link">
-            <div class="skmd-article__image skmd-ratio skmd-ratio--4-3">
-              <img src="https://images.unsplash.com/photo-1604076913837-52ab5629fba9?auto=format&fit=crop&q=80&w=300" alt="Trĩ khi mang thai" loading="lazy">
-            </div>
-            <div class="skmd-article__content">
-              <div class="skmd-article__meta">
-                <span class="skmd-badge skmd-badge--outline">Lời Khuyên</span>
-                <span class="skmd-article__date">25/07/2026</span>
-              </div>
-              <h4 class="skmd-article__title">Làm sao để xử lý tình trạng trĩ an toàn khi mang thai?</h4>
-            </div>
-          </a>
-        </article>
-
+      <div id="article-carousel-track" style="display: flex; gap: 24px; transition: transform 0.4s ease-in-out;">
+        <!-- INJECT_CAROUSEL_ARTICLES -->
       </div>
+      
+      <!-- Next Button -->
+      <button id="btn-next-article" aria-label="Next" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10; background: white; border: 1px solid var(--color-border); box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.4; transition: all 0.3s ease;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
     </div>
     
     <div style="text-align: center; margin-top: 40px;">
@@ -86,3 +29,73 @@
     </div>
   </div>
 </section>
+
+<style>
+  #btn-prev-article:hover, #btn-next-article:hover {
+    opacity: 1 !important;
+    background-color: var(--color-primary) !important;
+  }
+  #btn-prev-article:hover svg, #btn-next-article:hover svg {
+    stroke: white;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById('article-carousel-track');
+    const btnPrev = document.getElementById('btn-prev-article');
+    const btnNext = document.getElementById('btn-next-article');
+    
+    if (!track || !btnPrev || !btnNext) return;
+    
+    let currentIndex = 0;
+    const cards = track.children;
+    const totalCards = cards.length;
+    
+    const getCardsPerView = () => window.innerWidth < 768 ? 1 : (window.innerWidth < 1024 ? 2 : 3);
+    
+    function updateCarousel() {
+      if (totalCards === 0) return;
+      
+      const cardsPerView = getCardsPerView();
+      const maxIndex = Math.max(0, totalCards - cardsPerView);
+      
+      if (currentIndex > maxIndex) currentIndex = maxIndex;
+      
+      const cardWidth = cards[0].offsetWidth;
+      const gap = 24; 
+      const moveDistance = (cardWidth + gap) * currentIndex;
+      track.style.transform = `translateX(-${moveDistance}px)`;
+      
+      if(currentIndex === 0) {
+        btnPrev.style.pointerEvents = 'none';
+        btnPrev.style.opacity = '0.2';
+      } else {
+        btnPrev.style.pointerEvents = 'auto';
+        btnPrev.style.opacity = '0.6';
+      }
+      
+      if(currentIndex >= maxIndex) {
+        btnNext.style.pointerEvents = 'none';
+        btnNext.style.opacity = '0.2';
+      } else {
+        btnNext.style.pointerEvents = 'auto';
+        btnNext.style.opacity = '0.6';
+      }
+    }
+
+    btnNext.addEventListener('click', () => {
+      currentIndex++;
+      updateCarousel();
+    });
+
+    btnPrev.addEventListener('click', () => {
+      currentIndex--;
+      updateCarousel();
+    });
+    
+    updateCarousel();
+    
+    window.addEventListener('resize', updateCarousel);
+  });
+</script>
