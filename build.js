@@ -192,7 +192,10 @@ async function runBuildPipeline() {
       else if (fileSlug.includes('landing')) pageType = 'landing';
       else if (!isTemplatePage) pageType = 'article';
       
-      const pageData = { title: fileSlug, slug: fileSlug }; // Fallback data
+      const pageData = {
+        title: fileSlug === 'index' ? siteConfig.name : fileSlug,
+        slug: fileSlug === 'index' ? '' : fileSlug
+      }; // Fallback data
       
       const schemaStrategy = SchemaMapper.getStrategy(pageType);
       const pageSchemas = [];

@@ -31,7 +31,6 @@ export class SchemaFactory {
       "foundingDate": schemaConfig.registry.publisher.foundingDate,
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+8419008888", // from clinic config
         "contactType": "customer service",
         "areaServed": schemaConfig.registry.country,
         "availableLanguage": schemaConfig.registry.availableLanguages
@@ -47,7 +46,6 @@ export class SchemaFactory {
       "url": this.getBaseUrl(),
       "logo": {"@id": `${this.getBaseUrl()}/#logo`},
       "image": {"@id": `${this.getBaseUrl()}/#logo`},
-      "telephone": "+8419008888",
       "priceRange": schemaConfig.registry.priceRange,
       "medicalSpecialty": schemaConfig.registry.medicalSpecialty.map(s => `https://schema.org/${s}`),
       "address": {

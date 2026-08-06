@@ -33,10 +33,7 @@ export const schemaConfig = {
       name: siteConfig.name,
       logoUrl: siteConfig.url + siteConfig.logo,
       foundingDate: "2015-01-01",
-      socialLinks: [
-        "https://www.facebook.com/cattricantho",
-        "https://www.youtube.com/@cattricantho"
-      ]
+      socialLinks: []
     },
     medicalSpecialty: [
       "Gastroenterologic",
