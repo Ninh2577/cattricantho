@@ -26,6 +26,25 @@ const __dirname = path.dirname(__filename);
 const SRC_DIR = __dirname;
 const DIST_DIR = path.join(__dirname, 'dist');
 
+function skmdRewriteUrl(url, slug) {
+  if (!url) return url;
+  const match = url.match(/graphassets\.com\/([^\/]+)\/([^\/]+)$/);
+  if (match) {
+     const id = match[2];
+     const cleanSlug = slug ? slug.replace(/[^a-z0-9-]/gi, '') : 'image';
+     return `/image/${id}/${cleanSlug}.jpg`;
+  }
+  return url;
+}
+
+function skmdMinifyHtml(html) {
+  if (!html) return '';
+  return html
+    .replace(/<!--(?!\s*INJECT|\s*ACTIVE)[^>]+-->/g, '') // Xóa comments an toàn
+    .replace(/>\s+</g, '><') // Xóa khoảng trắng giữa các tags
+    .trim();
+}
+
 async function runBuildPipeline() {
   Logger.info('Orchestrator', 'Bắt đầu Enterprise Build Pipeline...');
   const startTime = Date.now();
@@ -107,7 +126,8 @@ async function runBuildPipeline() {
         if (latestArticles.length > 0) {
           latestArticlesHtml.sidebar = latestArticles.slice(0, 5).map(art => {
             const aSlug = art.slug || `bai-viet-${art.id}`;
-            const aImg = (Array.isArray(art.anh) ? art.anh[0]?.url : art.anh?.url) || 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=300';
+            const rawImgUrl = (Array.isArray(art.anh) ? art.anh[0]?.url : art.anh?.url);
+            const aImg = rawImgUrl ? skmdRewriteUrl(rawImgUrl, aSlug) : 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=300';
             return `
               <a href="/${aSlug}" style="display: flex; gap: 12px; text-decoration: none; color: inherit; align-items: flex-start;">
                 <img src="${aImg}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="${art.title}">
@@ -119,7 +139,8 @@ async function runBuildPipeline() {
           latestArticlesHtml.carousel = latestArticles.map(art => {
             const aSlug = art.slug || `bai-viet-${art.id}`;
             const aDate = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
-            const aImg = (Array.isArray(art.anh) ? art.anh[0]?.url : art.anh?.url) || 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=300';
+            const rawImgUrl = (Array.isArray(art.anh) ? art.anh[0]?.url : art.anh?.url);
+            const aImg = rawImgUrl ? skmdRewriteUrl(rawImgUrl, aSlug) : 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=300';
             const aCatName = articlesByCategory[catSlugMap[art.danhMuc || 'tri'] || 'tri']?.name || 'Tin Tức';
             
             return `
@@ -252,7 +273,7 @@ async function runBuildPipeline() {
         } else {
           buildStats.generated++;
           buildStats.warnings += validationResult.warnings.length;
-          fs.writeFileSync(path.join(distPagesDir, file), content);
+          fs.writeFileSync(path.join(distPagesDir, file), skmdMinifyHtml(content));
         }
       } catch (e) {
         buildStats.failed++;
@@ -306,8 +327,9 @@ async function runBuildPipeline() {
               const dateFormatted = article.ngayDang 
                 ? new Date(article.ngayDang).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
                 : new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-              const featuredImageHtml = article.anh?.url 
-                ? `<img src="${article.anh.url}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;">`
+              const featuredImgUrl = article.anh?.url ? skmdRewriteUrl(article.anh.url, articleSlug) : '';
+              const featuredImageHtml = featuredImgUrl 
+                ? `<img src="${featuredImgUrl}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;" fetchpriority="high">`
                 : '';
 
               articleHtml = articleHtml
@@ -329,7 +351,7 @@ async function runBuildPipeline() {
 
               // Inject components & SEO tags with article page data
               articleHtml = injectComponentsAndVars(articleHtml, articleSlug);
-              fs.writeFileSync(path.join(distPagesDir, `${articleSlug}.html`), articleHtml);
+              fs.writeFileSync(path.join(distPagesDir, `${articleSlug}.html`), skmdMinifyHtml(articleHtml));
               buildStats.generated++;
             } catch (err) {
               Logger.error('Orchestrator', `Lỗi tạo trang bài viết ${article.slug}:`, err);
@@ -372,12 +394,13 @@ async function runBuildPipeline() {
                   
                   for (const art of pageArticles) {
                     const dateFormatted = art.ngayDang ? new Date(art.ngayDang).toLocaleDateString('vi-VN') : '';
-                    const img = art.anh?.url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
+                    const rawImgUrl = art.anh?.url;
+                    const img = rawImgUrl ? skmdRewriteUrl(rawImgUrl, art.slug || `bai-viet-${art.id}`) : 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400';
                     articlesHtml += `
                 <article class="skmd-article-small" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
                   <a href="/${art.slug}" class="skmd-article__link" style="display:flex; gap:24px; width:100%;">
                     <div class="skmd-article__image" style="width:250px; flex-shrink:0;">
-                      <img src="${img}" alt="${art.title}" style="border-radius: var(--radius-sm); object-fit: cover; height: 160px; width: 100%;">
+                      <img src="${img}" alt="${art.title}" style="border-radius: var(--radius-sm); object-fit: cover; height: 160px; width: 100%;" loading="lazy">
                     </div>
                     <div class="skmd-article__content">
                       <div class="skmd-article__meta">
@@ -408,7 +431,7 @@ async function runBuildPipeline() {
                 
                 const currentSlug = page === 1 ? catSlug : `${catSlug}-page-${page}`;
                 currentPageHtml = injectComponentsAndVars(currentPageHtml, currentSlug);
-                fs.writeFileSync(path.join(distPagesDir, `${currentSlug}.html`), currentPageHtml);
+                fs.writeFileSync(path.join(distPagesDir, `${currentSlug}.html`), skmdMinifyHtml(currentPageHtml));
                 buildStats.generated++;
               }
             }
@@ -428,16 +451,22 @@ async function runBuildPipeline() {
     SchemaReportGenerator.generate(schemaReportData);
 
     // Step 5: Sitemap & Feed
-    const pagesForSitemap = htmlFiles.map(file => {
-      const slug = file.replace('.html', '');
-      return {
-        slug: slug,
-        updatedAt: new Date().toISOString(), // Fallback (trong thực tế sẽ lấy từ CMS)
-        title: slug, // Fallback
-        description: slug,
-        createdAt: new Date().toISOString()
-      };
-    });
+    const pagesForSitemap = [];
+    pagesForSitemap.push({ slug: 'index', updatedAt: new Date().toISOString(), title: siteConfig.name, description: siteConfig.description });
+    const allowedCategories = ['tri', 'tri-noi', 'tri-ngoai', 'tri-hon-hop', 'ro-hau-mon'];
+    for (const cat of allowedCategories) {
+       pagesForSitemap.push({ slug: cat, updatedAt: new Date().toISOString(), title: cat, description: `Danh mục ${cat}` });
+    }
+    if (cmsArticles && cmsArticles.length > 0) {
+      for (const article of cmsArticles) {
+         pagesForSitemap.push({
+            slug: article.slug || `bai-viet-${article.id}`,
+            updatedAt: article.ngayDang || new Date().toISOString(),
+            title: article.title,
+            description: article.tomtat
+         });
+      }
+    }
     
     GeneratorEngine.generateSitemap(pagesForSitemap, DIST_DIR);
     GeneratorEngine.generateRss(pagesForSitemap, DIST_DIR);
@@ -446,6 +475,12 @@ async function runBuildPipeline() {
     if (fs.existsSync(path.join(SRC_DIR, 'vercel.json'))) {
       fs.copyFileSync(path.join(SRC_DIR, 'vercel.json'), path.join(DIST_DIR, 'vercel.json'));
     }
+
+    // Generate robots.txt
+    const robotsTxtContent = `User-agent: *
+Allow: /
+Sitemap: ${siteConfig.url}/sitemap.xml`;
+    fs.writeFileSync(path.join(DIST_DIR, 'robots.txt'), robotsTxtContent);
 
     // Step 7: Cleanup Backup
     RollbackManager.cleanupBackup(SRC_DIR);

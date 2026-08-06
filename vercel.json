@@ -2,6 +2,10 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/image/:assetId/:filename",
+      "destination": "https://us-west-2.graphassets.com/cmrwmii4g05ix07mv71dx83ti/:assetId"
+    },
+    {
       "source": "/",
       "destination": "/pages/index.html"
     },

@@ -65,6 +65,7 @@ export class SEOManager {
       <meta name="description" content="${description}">
       <meta name="theme-color" content="${themeColor}">
       <meta name="robots" content="${robots}">
+      <meta name="google-site-verification" content="hCfJiIHx9r5Wy0vuxkLKxQmqQXLYvtHV9CM2v6I6syA" />
       
       <!-- Favicon & Icons -->
       <link rel="icon" type="image/x-icon" href="${siteConfig.favicon}">

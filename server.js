@@ -33,6 +33,14 @@ const server = http.createServer((req, res) => {
   if (urlPath === '/' || urlPath === '/index.html') {
     // Trang chủ
     filePath = path.join(DIST_DIR, 'pages', 'index.html');
+  } else if (urlPath.startsWith('/image/')) {
+    // Local image proxy redirect
+    const parts = urlPath.split('/');
+    if (parts.length >= 4) {
+      const assetId = parts[2];
+      res.writeHead(302, { Location: `https://us-west-2.graphassets.com/cmrwmii4g05ix07mv71dx83ti/${assetId}` });
+      return res.end();
+    }
   } else if (urlPath.startsWith('/assets/')) {
     // Static assets
     filePath = path.join(DIST_DIR, urlPath);
