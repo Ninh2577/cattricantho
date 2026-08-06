@@ -475,6 +475,10 @@ async function runBuildPipeline() {
     if (fs.existsSync(path.join(SRC_DIR, 'vercel.json'))) {
       fs.copyFileSync(path.join(SRC_DIR, 'vercel.json'), path.join(DIST_DIR, 'vercel.json'));
     }
+    
+    if (fs.existsSync(path.join(SRC_DIR, 'favicon.ico'))) {
+      fs.copyFileSync(path.join(SRC_DIR, 'favicon.ico'), path.join(DIST_DIR, 'favicon.ico'));
+    }
 
     // Generate robots.txt
     const robotsTxtContent = `User-agent: *
