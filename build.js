@@ -276,7 +276,14 @@ async function runBuildPipeline() {
         } else {
           buildStats.generated++;
           buildStats.warnings += validationResult.warnings.length;
-          fs.writeFileSync(path.join(distPagesDir, file), skmdMinifyHtml(content));
+          
+          const minifiedHtml = skmdMinifyHtml(content);
+          fs.writeFileSync(path.join(distPagesDir, file), minifiedHtml);
+          
+          // Fix for Vercel 404: Vercel expects 404.html at the root of the output directory
+          if (file === '404.html') {
+            fs.writeFileSync(path.join(DIST_DIR, '404.html'), minifiedHtml);
+          }
         }
       } catch (e) {
         buildStats.failed++;
