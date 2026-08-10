@@ -210,8 +210,11 @@
       text-transform: uppercase;
     }
     .skmd-share-btn {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      min-height: 42px;
+      flex-shrink: 0;
       border-radius: 50%;
       border: 1px solid var(--color-border);
       display: flex;
@@ -219,12 +222,16 @@
       justify-content: center;
       color: var(--color-text-dark);
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      background: var(--color-white);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
     .skmd-share-btn:hover {
       background: var(--color-bg-offset);
       border-color: var(--color-primary);
       color: var(--color-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     
     @media(min-width: 1024px) {
@@ -294,21 +301,23 @@
 
             <h1 class="skmd-heading-1" style="font-size: 2.5rem; line-height: 1.3; color: #111827; margin-bottom: 20px; font-weight: 800; text-align: center;"><!-- INJECT_ARTICLE_TITLE --></h1>
             
-            <div class="skmd-article-meta" style="justify-content: center; font-size: 0.85rem; color: #6b7280; margin-bottom: 16px; display: flex; gap: 12px; align-items: center;">
-              <span style="display: flex; align-items: center; gap: 4px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> 
-                <!-- INJECT_READING_TIME --> phút
-              </span>
-              <span style="color: #d1d5db;">&bull;</span>
-              <span style="display: flex; align-items: center; gap: 4px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 
-                <!-- INJECT_ARTICLE_DATE -->
-              </span>
-              <span style="color: #d1d5db;">&bull;</span>
-              <span style="display: flex; align-items: center; gap: 4px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> 
-                Nguồn uy tín
-              </span>
+            <div class="skmd-article-meta" style="display: flex; justify-content: center; margin-bottom: 24px;">
+              <div style="display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-size: 0.85rem; color: #4b5563; background: #f9fafb; border: 1px solid #e5e7eb; padding: 8px 16px; border-radius: 24px;">
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> 
+                  <!-- INJECT_READING_TIME --> phút
+                </span>
+                <span style="color: #d1d5db;">&bull;</span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 
+                  <!-- INJECT_ARTICLE_DATE -->
+                </span>
+                <span style="color: #d1d5db;">&bull;</span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> 
+                  Nguồn uy tín
+                </span>
+              </div>
             </div>
 
             <div style="display: flex; justify-content: center; align-items: center; gap: 16px; font-size: 0.85rem;">
@@ -441,7 +450,9 @@
       
       const scrollspyTargets = Array.from(headings);
       
-      // Smooth scroll
+      // Smooth scroll with reduced motion support
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      
       tocLinks.forEach(link => {
         link.addEventListener("click", function(e) {
           e.preventDefault();
@@ -449,7 +460,10 @@
           const targetElement = document.getElementById(targetId);
           if (targetElement) {
             const targetOffset = targetElement.getBoundingClientRect().top + window.scrollY - 100;
-            window.scrollTo({ top: targetOffset, behavior: 'smooth' });
+            window.scrollTo({ 
+              top: targetOffset, 
+              behavior: prefersReducedMotion ? 'auto' : 'smooth' 
+            });
           }
         });
       });
@@ -474,7 +488,7 @@
           const activeLink = tocContainer.querySelector(`a[href="#${currentHeading.id}"]`);
           if (activeLink) {
             activeLink.classList.add("active");
-            activeLink.setAttribute("aria-current", "true");
+            activeLink.setAttribute("aria-current", "location");
           }
         }
       });

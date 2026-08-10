@@ -49,6 +49,22 @@ export class HtmlValidator {
     if (!/<script\s+type=["']application\/ld\+json["']/i.test(html)) {
       results.warnings.push('Trang này không có Schema Markup.');
     }
+    
+    // 6. TOC Integrity Validation
+    const tocMatch = html.match(/<nav\s+class=["']skmd-toc["'][^>]*>(.*?)<\/nav>/is);
+    if (tocMatch) {
+      const tocHtml = tocMatch[1];
+      const linkRegex = /<a[^>]+href=["']#([^"']+)["'][^>]*>/gi;
+      let linkMatch;
+      while ((linkMatch = linkRegex.exec(tocHtml)) !== null) {
+        const targetId = linkMatch[1];
+        // Check if the target ID actually exists on a heading in the document
+        const idRegex = new RegExp(`<h[23][^>]+id=["']${targetId}["']`, 'i');
+        if (!idRegex.test(html)) {
+          results.errors.push(`TOC INTEGRITY ERROR: Mục lục chứa liên kết trỏ đến ID '#${targetId}' nhưng không tìm thấy heading nào có ID này.`);
+        }
+      }
+    }
 
     if (results.errors.length > 0) {
       results.status = 'FAIL';

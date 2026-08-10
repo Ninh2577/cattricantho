@@ -58,20 +58,25 @@ export class SchemaMapper {
     
     const description = (rawData.seoDescription || rawData.tomtat || '').trim();
     
+    // Strip HTML tags for accurate word count
+    let wordCount = 0;
+    if (rawData.content) {
+      const plainText = rawData.content.replace(/<[^>]*>?/gm, '');
+      const words = plainText.trim().split(/\\s+/);
+      wordCount = words.length > 0 && words[0] !== '' ? words.length : 0;
+    }
+    
     // Normalize dữ liệu để ngăn lỗi Null Pointer trong Factory
     return {
       title: rawData.title || '',
       description: description || undefined,
       slug: rawData.slug || '',
       content: rawData.content || '',
-      wordCount: rawData.content ? rawData.content.split(' ').length : 0,
+      wordCount: wordCount > 0 ? wordCount : 0,
       readingTime: rawData.content ? Math.ceil(rawData.content.split(' ').length / 200) : 1, // 200 từ/phút
       image: rawData.featuredImage?.url || undefined,
-      datePublished: rawData.createdAt || new Date().toISOString(),
-      // Đảm bảo dateModified >= datePublished
-      dateModified: rawData.updatedAt && new Date(rawData.updatedAt) >= new Date(rawData.createdAt) 
-        ? rawData.updatedAt 
-        : (rawData.createdAt || new Date().toISOString()),
+      datePublished: rawData.createdAt || undefined,
+      dateModified: rawData.updatedAt || undefined,
       author: {
         name: rawData.author?.name || schemaConfig.defaults.author.name,
         role: rawData.author?.role || schemaConfig.defaults.author.jobTitle

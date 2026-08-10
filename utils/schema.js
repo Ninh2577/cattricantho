@@ -13,7 +13,7 @@ export class SchemaFactory {
   }
 
   static generateOrganization() {
-    return {
+    const org = {
       "@type": "Organization",
       "@id": `${this.getBaseUrl()}/#organization`,
       "name": schemaConfig.registry.publisher.name,
@@ -27,8 +27,6 @@ export class SchemaFactory {
         "caption": `${schemaConfig.registry.publisher.name} Logo`
       },
       "image": {"@id": `${this.getBaseUrl()}/#logo`},
-      "sameAs": schemaConfig.registry.publisher.socialLinks,
-      "foundingDate": schemaConfig.registry.publisher.foundingDate,
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer service",
@@ -36,6 +34,16 @@ export class SchemaFactory {
         "availableLanguage": schemaConfig.registry.availableLanguages
       }
     };
+    
+    // Chỉ thêm nếu có dữ liệu thực tế
+    if (schemaConfig.registry.publisher.socialLinks && schemaConfig.registry.publisher.socialLinks.length > 0) {
+      org.sameAs = schemaConfig.registry.publisher.socialLinks;
+    }
+    if (schemaConfig.registry.publisher.foundingDate) {
+      org.foundingDate = schemaConfig.registry.publisher.foundingDate;
+    }
+    
+    return org;
   }
 
   static generateMedicalClinic() {
@@ -69,15 +77,7 @@ export class SchemaFactory {
       "@id": `${this.getBaseUrl()}/#website`,
       "url": this.getBaseUrl(),
       "name": schemaConfig.registry.publisher.name,
-      "publisher": {"@id": `${this.getBaseUrl()}/#organization`},
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": `${this.getBaseUrl()}/tim-kiem?q={search_term_string}`
-        },
-        "query-input": "required name=search_term_string"
-      }
+      "publisher": {"@id": `${this.getBaseUrl()}/#organization`}
     };
   }
 
@@ -120,15 +120,20 @@ export class SchemaFactory {
       
     if (!slugId) slugId = "chuyen-gia";
     
-    return {
+    const person = {
       "@type": "Person",
       "@id": `${this.getBaseUrl()}/chuyen-gia/${slugId}#person`,
       "name": authorData.name,
       "jobTitle": authorData.role || role,
       "worksFor": {"@id": `${this.getBaseUrl()}/#organization`},
-      "sameAs": authorData.sameAs || [],
       "url": `${this.getBaseUrl()}/chuyen-gia/${slugId}`
     };
+    
+    if (authorData.sameAs && authorData.sameAs.length > 0) {
+      person.sameAs = authorData.sameAs;
+    }
+    
+    return person;
   }
 
   static generateMedicalCondition(name) {
@@ -159,7 +164,22 @@ export class SchemaFactory {
     const graph = [];
     if (authorEntity && authorEntity["@type"] === "Person") graph.push(authorEntity);
     if (reviewerEntity && reviewerEntity["@type"] === "Person") graph.push(reviewerEntity);
-    if (imageEntity && imageEntity.url) graph.push(imageEntity);
+    
+    // Tích hợp WebPage vào Article Graph để fix lỗi Dangling Node
+    const webPageSchema = {
+      "@type": "WebPage",
+      "@id": `${articleUrl}#webpage`,
+      "url": articleUrl,
+      "name": articleData.title,
+      "isPartOf": {"@id": `${this.getBaseUrl()}/#website`},
+      "inLanguage": "vi-VN"
+    };
+    
+    if (imageEntity && imageEntity.url) {
+      graph.push(imageEntity);
+      webPageSchema.primaryImageOfPage = {"@id": imageEntity["@id"]};
+    }
+    graph.push(webPageSchema);
 
     const articleSchema = {
       "@type": ["Article", "MedicalWebPage"],
