@@ -64,7 +64,7 @@ export class SchemaMapper {
       content: rawData.content || '',
       wordCount: rawData.content ? rawData.content.split(' ').length : 0,
       readingTime: rawData.content ? Math.ceil(rawData.content.split(' ').length / 200) : 1, // 200 từ/phút
-      image: rawData.featuredImage?.url || schemaConfig.defaults.image.url,
+      image: rawData.featuredImage?.url || undefined,
       datePublished: rawData.createdAt || new Date().toISOString(),
       // Đảm bảo dateModified >= datePublished
       dateModified: rawData.updatedAt && new Date(rawData.updatedAt) >= new Date(rawData.createdAt) 
@@ -79,8 +79,7 @@ export class SchemaMapper {
         role: rawData.reviewer?.role || schemaConfig.defaults.reviewer.jobTitle
       },
       keywords: rawData.seoKeywords || [],
-      medicalSpecialty: rawData.specialty || schemaConfig.registry.medicalSpecialty[0],
-      factChecked: rawData.factChecked !== false
+      medicalSpecialty: rawData.specialty || schemaConfig.registry.medicalSpecialty[0]
     };
   }
 

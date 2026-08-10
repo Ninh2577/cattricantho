@@ -10,6 +10,7 @@ import { HtmlValidator } from './utils/html-validator.js';
 import { SecurityManager } from './utils/security.js';
 import { QAReportGenerator } from './utils/qa-report.js';
 import { GeneratorEngine } from './utils/sitemap.js';
+import { HtmlParser } from './utils/html-parser.js';
 
 // 2. Core SEO & Schema Infrastructure
 import { siteConfig } from './config/site.config.js';
@@ -96,19 +97,19 @@ async function runBuildPipeline() {
       'ro-hau-mon': { name: 'Rò hậu môn', slug: 'ro-hau-mon', articles: [] },
       'kien-thuc': { name: 'Tất cả bài viết', slug: 'kien-thuc', articles: [] },
     };
+    
+    const catSlugMap = {
+      'tri': 'tri',
+      'tri_noi': 'tri-noi',
+      'tri_ngoai': 'tri-ngoai',
+      'tri_hon_hop': 'tri-hon-hop',
+      'ro_hau_mon': 'ro-hau-mon'
+    };
 
     try {
       cmsArticles = await apiService.getAllArticles();
       if (cmsArticles) {
         Logger.info('Orchestrator', `Đã tìm thấy ${cmsArticles.length} bài viết từ Hygraph CMS.`);
-        
-        const catSlugMap = {
-          'tri': 'tri',
-          'tri_noi': 'tri-noi',
-          'tri_ngoai': 'tri-ngoai',
-          'tri_hon_hop': 'tri-hon-hop',
-          'ro_hau_mon': 'ro-hau-mon'
-        };
         
         // Categorize articles
         for (const article of cmsArticles) {
@@ -172,7 +173,7 @@ async function runBuildPipeline() {
     const distPagesDir = path.join(DIST_DIR, 'pages');
     if (!fs.existsSync(distPagesDir)) fs.mkdirSync(distPagesDir, { recursive: true });
 
-    function injectComponentsAndVars(htmlContent, fileSlug) {
+    function injectComponentsAndVars(htmlContent, fileSlug, customPageData = null) {
       const componentRegex = /<!--\s*INJECT_COMPONENT:\s*([^>]+)\s*-->/g;
       let compiledHtml = htmlContent.replace(componentRegex, (match, compPath) => {
         const fullPath = path.join(SRC_DIR, compPath.trim());
@@ -192,7 +193,7 @@ async function runBuildPipeline() {
       else if (fileSlug.includes('landing')) pageType = 'landing';
       else if (!isTemplatePage) pageType = 'article';
       
-      const pageData = {
+      const pageData = customPageData || {
         title: fileSlug === 'index' ? siteConfig.name : fileSlug,
         slug: fileSlug === 'index' ? '' : fileSlug
       }; // Fallback data
@@ -207,7 +208,20 @@ async function runBuildPipeline() {
       // Only generate Article schema for real CMS-generated pages, not static templates
       if (schemaStrategy.includes('Article') && !isTemplatePage) {
         const articleData = SchemaMapper.mapArticleData(pageData);
-        pageSchemas.push(SchemaFactory.generateArticle(articleData));
+        const generatedSchemas = SchemaFactory.generateArticle(articleData);
+        if (Array.isArray(generatedSchemas)) {
+          pageSchemas.push(...generatedSchemas);
+        } else if (generatedSchemas) {
+          pageSchemas.push(generatedSchemas);
+        }
+      }
+      if (schemaStrategy.includes('BreadcrumbList') && !isTemplatePage) {
+        const breadcrumbs = [
+          { name: 'Trang chủ', url: '/', position: 1 },
+          { name: pageData.categoryName || 'Chuyên mục', url: `/${pageData.categorySlug || ''}`, position: 2 },
+          { name: pageData.title, url: `/${pageData.slug}`, position: 3 }
+        ];
+        pageSchemas.push(SchemaFactory.generateBreadcrumbList(breadcrumbs, `${SchemaFactory.getBaseUrl()}/${fileSlug}`));
       }
       
       const pageUrl = `${SchemaFactory.getBaseUrl()}/${fileSlug}`;
@@ -302,6 +316,9 @@ async function runBuildPipeline() {
           for (const article of cmsArticles) {
             try {
               const articleSlug = article.slug || `bai-viet-${article.id}`;
+              const categorySlug = catSlugMap[article.danhMuc || 'tri'] || 'tri';
+              const categoryName = articlesByCategory[categorySlug]?.name || 'Trĩ';
+              
               const pageData = {
                 title: article.title,
                 slug: articleSlug,
@@ -311,17 +328,11 @@ async function runBuildPipeline() {
                 featuredImage: article.anh,
                 author: { name: article.tacGia },
                 createdAt: article.ngayDang,
+                categoryName: categoryName,
+                categorySlug: categorySlug,
+                content: article.noiDung?.html || ''
               };
               
-              const rawCat = article.danhMuc || 'tri';
-              const catSlugMap = {
-                'tri': 'tri',
-                'tri_noi': 'tri-noi',
-                'tri_ngoai': 'tri-ngoai',
-                'tri_hon_hop': 'tri-hon-hop',
-                'ro_hau_mon': 'ro-hau-mon'
-              };
-              const categorySlug = catSlugMap[rawCat] || 'tri';
               
               let articleHtml = singleTemplate;
               
@@ -342,12 +353,17 @@ async function runBuildPipeline() {
                 ? `<img src="${featuredImgUrl}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;" fetchpriority="high">`
                 : '';
 
+              const parsedHtmlData = HtmlParser.parseHeadingsAndInjectIds(article.noiDung?.html || '');
+              const articleContentHtml = parsedHtmlData.html;
+              const tocHtml = HtmlParser.generateTocHtml(parsedHtmlData.headings);
+
               articleHtml = articleHtml
                 .replace(/<!-- INJECT_ARTICLE_TITLE -->/g, article.title || '')
                 .replace(/<!-- INJECT_ARTICLE_CATEGORY -->/g, articlesByCategory[categorySlug]?.name || 'Trĩ')
                 .replace(/<!-- INJECT_CATEGORY_SLUG -->/g, categorySlug)
                 .replace(/<!-- INJECT_ARTICLE_EXCERPT -->/g, article.tomtat || '')
-                .replace(/<!-- INJECT_ARTICLE_CONTENT -->/g, article.noiDung?.html || '')
+                .replace(/<!-- INJECT_ARTICLE_CONTENT -->/g, articleContentHtml)
+                .replace(/<!-- INJECT_TOC -->/g, tocHtml)
                 .replace(/<!-- INJECT_ARTICLE_FEATURED_IMAGE -->/g, featuredImageHtml)
                 .replace(/<!-- INJECT_ARTICLE_DATE -->/g, dateFormatted)
                 .replace(/<!-- INJECT_READING_TIME -->/g, readingTime)
@@ -360,7 +376,7 @@ async function runBuildPipeline() {
                 .replace(/<!-- INJECT_SIDEBAR_LATEST -->/g, latestArticlesHtml.sidebar || '');
 
               // Inject components & SEO tags with article page data
-              articleHtml = injectComponentsAndVars(articleHtml, articleSlug);
+              articleHtml = injectComponentsAndVars(articleHtml, articleSlug, pageData);
               fs.writeFileSync(path.join(distPagesDir, `${articleSlug}.html`), skmdMinifyHtml(articleHtml));
               buildStats.generated++;
             } catch (err) {
@@ -440,7 +456,8 @@ async function runBuildPipeline() {
                 currentPageHtml = currentPageHtml.replace(/<!-- INJECT_PAGINATION -->/g, paginationHtml);
                 
                 const currentSlug = page === 1 ? catSlug : `${catSlug}-page-${page}`;
-                currentPageHtml = injectComponentsAndVars(currentPageHtml, currentSlug);
+                const catPageData = { title: catData.name, slug: currentSlug, categoryName: catData.name, categorySlug: catSlug };
+                currentPageHtml = injectComponentsAndVars(currentPageHtml, currentSlug, catPageData);
                 fs.writeFileSync(path.join(distPagesDir, `${currentSlug}.html`), skmdMinifyHtml(currentPageHtml));
                 buildStats.generated++;
               }

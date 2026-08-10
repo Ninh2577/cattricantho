@@ -94,6 +94,20 @@ export class SchemaFactory {
   }
 
   static generatePerson(authorData, role = "MedicalProfessional") {
+    if (!authorData || !authorData.name) return null;
+    
+    const genericNames = ['đội ngũ y khoa', 'đội ngũ bác sĩ', 'ban cố vấn y khoa', 'ban biên tập'];
+    const isGeneric = genericNames.includes(authorData.name.toLowerCase().trim());
+    
+    if (isGeneric) {
+      return {
+        "@type": "Organization",
+        "@id": `${this.getBaseUrl()}/#editorial-team`,
+        "name": authorData.name,
+        "url": this.getBaseUrl()
+      };
+    }
+    
     const slugId = authorData.name.toLowerCase().replace(/\\s+/g, '-');
     return {
       "@type": "Person",
@@ -132,40 +146,34 @@ export class SchemaFactory {
       "height": 630
     };
 
-    return [
-      authorEntity,
-      reviewerEntity,
-      imageEntity,
-      {
-        "@type": ["Article", "MedicalWebPage"],
-        "@id": `${articleUrl}#article`,
-        "url": articleUrl,
-        "headline": articleData.title,
-        "description": articleData.description,
-        "image": {"@id": `${articleUrl}#primaryimage`},
-        "thumbnailUrl": articleData.image,
-        "datePublished": articleData.datePublished,
-        "dateModified": articleData.dateModified,
-        "author": {"@id": authorEntity["@id"]},
-        "reviewedBy": {"@id": reviewerEntity["@id"]},
-        "publisher": {"@id": `${this.getBaseUrl()}/#organization`},
-        "mainEntityOfPage": {"@id": `${articleUrl}#webpage`},
-        "wordCount": articleData.wordCount,
-        "timeRequired": `PT${articleData.readingTime}M`,
-        "inLanguage": "vi-VN",
-        "medicalSpecialty": `https://schema.org/${articleData.medicalSpecialty}`,
-        "medicalAudience": "Patients",
-        "factChecked": articleData.factChecked,
-        "speakable": {
-          "@type": "SpeakableSpecification",
-          "xpath": [
-            "//h1",
-            "//meta[@name='description']/@content"
-          ]
-        },
-        "about": articleData.keywords.map(kw => this.generateMedicalCondition(kw))
-      }
-    ];
+    const graph = [];
+    if (authorEntity && authorEntity["@type"] === "Person") graph.push(authorEntity);
+    if (reviewerEntity && reviewerEntity["@type"] === "Person") graph.push(reviewerEntity);
+    if (imageEntity) graph.push(imageEntity);
+
+    const articleSchema = {
+      "@type": ["Article", "MedicalWebPage"],
+      "@id": `${articleUrl}#article`,
+      "url": articleUrl,
+      "headline": articleData.title,
+      "description": articleData.description,
+      "image": {"@id": `${articleUrl}#primaryimage`},
+      "datePublished": articleData.datePublished,
+      "dateModified": articleData.dateModified,
+      "publisher": {"@id": `${this.getBaseUrl()}/#organization`},
+      "mainEntityOfPage": {"@id": `${articleUrl}#webpage`},
+      "inLanguage": "vi-VN",
+      "medicalSpecialty": `https://schema.org/${articleData.medicalSpecialty}`,
+      "medicalAudience": "Patients",
+      "about": articleData.keywords ? articleData.keywords.map(kw => this.generateMedicalCondition(kw)) : undefined
+    };
+
+    if (authorEntity) articleSchema.author = {"@id": authorEntity["@id"]};
+    if (reviewerEntity) articleSchema.reviewedBy = {"@id": reviewerEntity["@id"]};
+    if (articleData.wordCount > 0) articleSchema.wordCount = articleData.wordCount;
+
+    graph.push(articleSchema);
+    return graph;
   }
 
   static generateBreadcrumbList(breadcrumbs, currentUrl) {

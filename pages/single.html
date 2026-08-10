@@ -403,9 +403,9 @@
           <!-- Dynamic Table of Contents -->
           <div class="skmd-sidebar-widget">
             <h3 class="skmd-sidebar-widget__title">Mục Lục</h3>
-            <ul class="skmd-toc" id="skmd-dynamic-toc">
-              <!-- JS WILL INJECT TOC HERE -->
-            </ul>
+            <div id="skmd-dynamic-toc">
+              <!-- INJECT_TOC -->
+            </div>
           </div>
 
           <!-- Latest Articles Widget -->
@@ -436,42 +436,23 @@
       if (!content || !tocContainer) return;
       
       const headings = content.querySelectorAll("h2, h3");
-      if (headings.length === 0) {
-        tocContainer.innerHTML = "<li><span style='color: var(--color-text-light); font-size: 0.9rem;'>Bài viết không có mục lục.</span></li>";
-        return;
-      }
+      const tocLinks = tocContainer.querySelectorAll("a");
+      if (headings.length === 0 || tocLinks.length === 0) return;
       
-      const tocFragment = document.createDocumentFragment();
-      const scrollspyTargets = [];
+      const scrollspyTargets = Array.from(headings);
       
-      headings.forEach((heading, index) => {
-        // Create an ID if heading doesn't have one
-        if (!heading.id) {
-          const slug = heading.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-          heading.id = slug ? slug + '-' + index : 'section-' + index;
-        }
-        
-        scrollspyTargets.push(heading);
-        
-        const li = document.createElement("li");
-        if (heading.tagName.toLowerCase() === "h3") li.className = "toc-h3";
-        
-        const a = document.createElement("a");
-        a.href = "#" + heading.id;
-        a.textContent = heading.textContent;
-        
-        // Smooth scroll
-        a.addEventListener("click", function(e) {
+      // Smooth scroll
+      tocLinks.forEach(link => {
+        link.addEventListener("click", function(e) {
           e.preventDefault();
-          const targetOffset = heading.getBoundingClientRect().top + window.scrollY - 100;
-          window.scrollTo({ top: targetOffset, behavior: 'smooth' });
+          const targetId = this.getAttribute("href").substring(1);
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            const targetOffset = targetElement.getBoundingClientRect().top + window.scrollY - 100;
+            window.scrollTo({ top: targetOffset, behavior: 'smooth' });
+          }
         });
-        
-        li.appendChild(a);
-        tocFragment.appendChild(li);
       });
-      
-      tocContainer.appendChild(tocFragment);
       
       // Scrollspy
       const tocLinks = tocContainer.querySelectorAll("a");
