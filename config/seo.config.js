@@ -43,5 +43,18 @@ export const seoConfig = {
   plugins: {
     analytics: true,
     tagManager: false
+  },
+  
+  // Internal Linking Seed Keywords
+  internalLinking: {
+    seedKeywords: [
+      { keyword: "cắt trĩ", url: "/tri" },
+      { keyword: "trĩ nội", url: "/tri" },
+      { keyword: "trĩ ngoại", url: "/tri" },
+      { keyword: "trĩ hỗn hợp", url: "/tri" },
+      { keyword: "rò hậu môn", url: "/ro-hau-mon" },
+      { keyword: "nứt kẽ hậu môn", url: "/nut-ke-hau-mon" },
+      { keyword: "phương pháp điều trị trĩ", url: "/tri" }
+    ]
   }
 };

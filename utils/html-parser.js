@@ -145,6 +145,25 @@ export class HtmlParser {
     return { html: resultHtml, headings };
   }
 
+  static optimizeImages(html) {
+    if (!html) return html;
+    
+    // Safely inject loading="lazy" and decoding="async" to all <img> tags if they don't have it
+    // Using a regex to match <img> tags
+    return html.replace(/<img([^>]*)>/gi, (match, p1) => {
+      let attrs = p1;
+      
+      if (!/loading\s*=\s*['"](lazy|eager)['"]/i.test(attrs)) {
+        attrs += ' loading="lazy"';
+      }
+      if (!/decoding\s*=\s*['"](async|auto|sync)['"]/i.test(attrs)) {
+        attrs += ' decoding="async"';
+      }
+      
+      return `<img${attrs}>`;
+    });
+  }
+
   static generateTocHtml(headings) {
     if (!headings || headings.length === 0) return '';
     

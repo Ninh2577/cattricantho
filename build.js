@@ -20,6 +20,8 @@ import { SchemaMapper } from './utils/schema-mapper.js';
 import { SchemaFactory } from './utils/schema.js';
 import { SchemaValidator } from './utils/schema-validator.js';
 import { SchemaReportGenerator } from './utils/schema-report.js';
+import { InternalLinkingEngine } from './utils/internal-link.js';
+import { seoConfig } from './config/seo.config.js';
 import { apiService } from './services/api.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -41,8 +43,8 @@ function skmdRewriteUrl(url, slug) {
 function skmdMinifyHtml(html) {
   if (!html) return '';
   return html
-    .replace(/<!--(?!\s*INJECT|\s*ACTIVE)[^>]+-->/g, '') // Xóa comments an toàn
-    .replace(/>\s+</g, '><') // Xóa khoảng trắng giữa các tags
+    .replace(/<!--(?!(\s*INJECT|\s*ACTIVE))[\s\S]*?-->/g, '') // Xóa comments an toàn
+    .replace(/\n\s*\n/g, '\n') // Giảm thiểu whitespace dư thừa an toàn
     .trim();
 }
 
@@ -197,6 +199,10 @@ async function runBuildPipeline() {
         title: fileSlug === 'index' ? siteConfig.name : fileSlug,
         slug: fileSlug === 'index' ? '' : fileSlug
       }; // Fallback data
+      
+      if (pageType === '404') {
+        pageData.robots = 'noindex, nofollow';
+      }
       
       const schemaStrategy = SchemaMapper.getStrategy(pageType);
       const pageSchemas = [];
@@ -354,7 +360,14 @@ async function runBuildPipeline() {
                 ? `<img src="${featuredImgUrl}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;" fetchpriority="high">`
                 : '';
 
-              const parsedHtmlData = HtmlParser.parseHeadingsAndInjectIds(article.noiDung?.html || '');
+              let rawContent = article.noiDung?.html || '';
+              rawContent = HtmlParser.optimizeImages(rawContent);
+              
+              if (seoConfig.internalLinking && seoConfig.internalLinking.seedKeywords) {
+                rawContent = InternalLinkingEngine.injectContextualLinks(rawContent, seoConfig.internalLinking.seedKeywords);
+              }
+
+              const parsedHtmlData = HtmlParser.parseHeadingsAndInjectIds(rawContent);
               const articleContentHtml = parsedHtmlData.html;
               const tocHtml = HtmlParser.generateTocHtml(parsedHtmlData.headings);
 

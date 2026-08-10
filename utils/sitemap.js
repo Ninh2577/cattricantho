@@ -13,19 +13,30 @@ export class GeneratorEngine {
     Logger.info('GeneratorEngine', 'Đang khởi tạo sitemap.xml...');
     
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`;
 
     pages.forEach(page => {
       const url = `${siteConfig.url}/${page.slug === 'index' ? '' : page.slug}`;
       const lastmod = page.updatedAt ? new Date(page.updatedAt).toISOString() : new Date().toISOString();
       const priority = page.slug === 'index' ? '1.0' : '0.8';
 
+      let imageTag = '';
+      if (page.featuredImage && page.featuredImage.url) {
+        // Only use absolute URLs, safely encode ampersands if any
+        const imgUrl = page.featuredImage.url.startsWith('http') 
+          ? page.featuredImage.url.replace(/&/g, '&amp;') 
+          : `${siteConfig.url}${page.featuredImage.url.startsWith('/') ? '' : '/'}${page.featuredImage.url}`.replace(/&/g, '&amp;');
+        
+        imageTag = `\n    <image:image>\n      <image:loc>${imgUrl}</image:loc>\n    </image:image>`;
+      }
+
       xml += `
   <url>
     <loc>${url}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>${priority}</priority>
+    <priority>${priority}</priority>${imageTag}
   </url>`;
     });
 
