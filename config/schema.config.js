@@ -15,9 +15,9 @@ export const schemaConfig = {
   // 2. Feature Flags (Bật tắt từng loại Schema theo ý muốn)
   features: {
     enableOrganization: true,
-    enableMedicalClinic: true,
+    enableMedicalClinic: false,
     enableWebSite: true,
-    enableLocalBusiness: true,
+    enableLocalBusiness: false,
     enableSearchAction: true,
     enableBreadcrumb: true,
     enableFAQ: true,

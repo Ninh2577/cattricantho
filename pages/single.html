@@ -455,8 +455,6 @@
       });
       
       // Scrollspy
-      const tocLinks = tocContainer.querySelectorAll("a");
-      
       window.addEventListener("scroll", function() {
         const scrollPosition = window.scrollY + 120;
         let currentHeading = null;
@@ -467,11 +465,17 @@
           }
         });
         
-        tocLinks.forEach(link => link.classList.remove("active"));
+        tocLinks.forEach(link => {
+          link.classList.remove("active");
+          link.removeAttribute("aria-current");
+        });
         
         if (currentHeading) {
           const activeLink = tocContainer.querySelector(`a[href="#${currentHeading.id}"]`);
-          if (activeLink) activeLink.classList.add("active");
+          if (activeLink) {
+            activeLink.classList.add("active");
+            activeLink.setAttribute("aria-current", "true");
+          }
         }
       });
     });

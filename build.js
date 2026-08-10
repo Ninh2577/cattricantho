@@ -216,12 +216,13 @@ async function runBuildPipeline() {
         }
       }
       if (schemaStrategy.includes('BreadcrumbList') && !isTemplatePage) {
+        const baseUrl = SchemaFactory.getBaseUrl();
         const breadcrumbs = [
-          { name: 'Trang chủ', url: '/', position: 1 },
-          { name: pageData.categoryName || 'Chuyên mục', url: `/${pageData.categorySlug || ''}`, position: 2 },
-          { name: pageData.title, url: `/${pageData.slug}`, position: 3 }
+          { name: 'Trang chủ', url: `${baseUrl}/`, position: 1 },
+          { name: pageData.categoryName || 'Chuyên mục', url: `${baseUrl}/${pageData.categorySlug || ''}`, position: 2 },
+          { name: pageData.title, url: `${baseUrl}/${pageData.slug}`, position: 3 }
         ];
-        pageSchemas.push(SchemaFactory.generateBreadcrumbList(breadcrumbs, `${SchemaFactory.getBaseUrl()}/${fileSlug}`));
+        pageSchemas.push(SchemaFactory.generateBreadcrumbList(breadcrumbs, `${baseUrl}/${fileSlug}`));
       }
       
       const pageUrl = `${SchemaFactory.getBaseUrl()}/${fileSlug}`;

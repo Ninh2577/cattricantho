@@ -56,10 +56,12 @@ export class SchemaMapper {
   static mapArticleData(rawData) {
     if (!rawData) return null;
     
+    const description = (rawData.seoDescription || rawData.tomtat || '').trim();
+    
     // Normalize dữ liệu để ngăn lỗi Null Pointer trong Factory
     return {
       title: rawData.title || '',
-      description: rawData.description || '',
+      description: description || undefined,
       slug: rawData.slug || '',
       content: rawData.content || '',
       wordCount: rawData.content ? rawData.content.split(' ').length : 0,
@@ -79,7 +81,7 @@ export class SchemaMapper {
         role: rawData.reviewer?.role || schemaConfig.defaults.reviewer.jobTitle
       },
       keywords: rawData.seoKeywords || [],
-      medicalSpecialty: rawData.specialty || schemaConfig.registry.medicalSpecialty[0]
+      medicalSpecialty: rawData.specialty ? rawData.specialty : undefined
     };
   }
 

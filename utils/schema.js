@@ -96,19 +96,30 @@ export class SchemaFactory {
   static generatePerson(authorData, role = "MedicalProfessional") {
     if (!authorData || !authorData.name) return null;
     
-    const genericNames = ['đội ngũ y khoa', 'đội ngũ bác sĩ', 'ban cố vấn y khoa', 'ban biên tập'];
-    const isGeneric = genericNames.includes(authorData.name.toLowerCase().trim());
+    const normalizedName = authorData.name.toLowerCase().trim();
+    const genericPatterns = [
+      /^đội ngũ y khoa/, /^đội ngũ chuyên gia/, /^đội ngũ bác sĩ/,
+      /^đội ngũ chuyên khoa/, /^ban biên tập/, /^ban cố vấn/,
+      /^hội đồng y khoa/, /^chuyên gia y tế/, /^editorial team/, /^medical team/
+    ];
+    
+    const isGeneric = genericPatterns.some(pattern => pattern.test(normalizedName));
     
     if (isGeneric) {
+      if (role === "MedicalReviewer") {
+        return null; // Không tự động fallback reviewer về Organization
+      }
       return {
-        "@type": "Organization",
-        "@id": `${this.getBaseUrl()}/#editorial-team`,
-        "name": authorData.name,
-        "url": this.getBaseUrl()
+        "@id": `${this.getBaseUrl()}/#organization`
       };
     }
     
-    const slugId = authorData.name.toLowerCase().replace(/\\s+/g, '-');
+    let slugId = normalizedName
+      .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+      .replace(/đ/g, "d").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      
+    if (!slugId) slugId = "chuyen-gia";
+    
     return {
       "@type": "Person",
       "@id": `${this.getBaseUrl()}/chuyen-gia/${slugId}#person`,
@@ -116,7 +127,6 @@ export class SchemaFactory {
       "jobTitle": authorData.role || role,
       "worksFor": {"@id": `${this.getBaseUrl()}/#organization`},
       "sameAs": authorData.sameAs || [],
-      "knowsAbout": schemaConfig.registry.medicalSpecialty,
       "url": `${this.getBaseUrl()}/chuyen-gia/${slugId}`
     };
   }
@@ -149,28 +159,30 @@ export class SchemaFactory {
     const graph = [];
     if (authorEntity && authorEntity["@type"] === "Person") graph.push(authorEntity);
     if (reviewerEntity && reviewerEntity["@type"] === "Person") graph.push(reviewerEntity);
-    if (imageEntity) graph.push(imageEntity);
+    if (imageEntity && imageEntity.url) graph.push(imageEntity);
 
     const articleSchema = {
       "@type": ["Article", "MedicalWebPage"],
       "@id": `${articleUrl}#article`,
       "url": articleUrl,
       "headline": articleData.title,
-      "description": articleData.description,
-      "image": {"@id": `${articleUrl}#primaryimage`},
       "datePublished": articleData.datePublished,
       "dateModified": articleData.dateModified,
       "publisher": {"@id": `${this.getBaseUrl()}/#organization`},
       "mainEntityOfPage": {"@id": `${articleUrl}#webpage`},
-      "inLanguage": "vi-VN",
-      "medicalSpecialty": `https://schema.org/${articleData.medicalSpecialty}`,
-      "medicalAudience": "Patients",
-      "about": articleData.keywords ? articleData.keywords.map(kw => this.generateMedicalCondition(kw)) : undefined
+      "inLanguage": "vi-VN"
     };
 
+    if (articleData.description) articleSchema.description = articleData.description;
+    if (imageEntity && imageEntity.url) articleSchema.image = {"@id": `${articleUrl}#primaryimage`};
     if (authorEntity) articleSchema.author = {"@id": authorEntity["@id"]};
     if (reviewerEntity) articleSchema.reviewedBy = {"@id": reviewerEntity["@id"]};
     if (articleData.wordCount > 0) articleSchema.wordCount = articleData.wordCount;
+    if (articleData.medicalSpecialty) articleSchema.medicalSpecialty = `https://schema.org/${articleData.medicalSpecialty}`;
+    
+    if (articleData.keywords && articleData.keywords.length > 0) {
+      articleSchema.about = articleData.keywords.map(kw => this.generateMedicalCondition(kw));
+    }
 
     graph.push(articleSchema);
     return graph;
