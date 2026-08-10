@@ -1,0 +1,62 @@
+{
+  "404": {
+    "pass": 0,
+    "fail": 0
+  },
+  "timestamp": "2026-08-10T09:35:38.304Z",
+  "baseUrl": "https://cattricantho.vercel.app",
+  "buildStatus": "VERIFIED",
+  "totalPages": 13,
+  "critical": 0,
+  "warnings": 0,
+  "passes": 28,
+  "http": {
+    "pass": 0,
+    "fail": 0
+  },
+  "robots": {
+    "pass": 0,
+    "fail": 0
+  },
+  "sitemap": {
+    "pass": 0,
+    "fail": 0
+  },
+  "canonical": {
+    "pass": 0,
+    "fail": 0
+  },
+  "metadata": {
+    "pass": 0,
+    "fail": 0
+  },
+  "openGraph": {
+    "pass": 0,
+    "warn": 0
+  },
+  "schema": {
+    "pass": 0,
+    "fail": 0
+  },
+  "internalLinks": {
+    "valid": 0,
+    "selfLinks": 0,
+    "broken": 0
+  },
+  "images": {
+    "total": 11,
+    "eager": 1,
+    "lazy": 5,
+    "missingAlt": 0
+  },
+  "contentIntegrity": {
+    "pass": 0,
+    "warn": 0,
+    "critical": 0
+  },
+  "performance": {
+    "htmlSize": 248256,
+    "cssSize": 0,
+    "jsSize": 0
+  }
+}

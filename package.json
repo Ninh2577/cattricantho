@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seo:audit": "node build.js && node audit.js"
   }
 }

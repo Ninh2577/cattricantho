@@ -148,15 +148,28 @@ export class HtmlParser {
   static optimizeImages(html) {
     if (!html) return html;
     
-    // Safely inject loading="lazy" and decoding="async" to all <img> tags if they don't have it
-    // Using a regex to match <img> tags
+    let isFirstImage = true;
+    
+    // Safely inject loading/decoding/fetchpriority attributes
     return html.replace(/<img([^>]*)>/gi, (match, p1) => {
       let attrs = p1;
       
-      if (!/loading\s*=\s*['"](lazy|eager)['"]/i.test(attrs)) {
-        attrs += ' loading="lazy"';
+      // Check if it's the very first image in the content
+      if (isFirstImage) {
+        if (!/fetchpriority\s*=\s*['"][^'"]*['"]/i.test(attrs)) {
+          attrs += ' fetchpriority="high"';
+        }
+        if (!/loading\s*=\s*['"][^'"]*['"]/i.test(attrs)) {
+          attrs += ' loading="eager"'; // LCP protection
+        }
+        isFirstImage = false;
+      } else {
+        if (!/loading\s*=\s*['"][^'"]*['"]/i.test(attrs)) {
+          attrs += ' loading="lazy"';
+        }
       }
-      if (!/decoding\s*=\s*['"](async|auto|sync)['"]/i.test(attrs)) {
+      
+      if (!/decoding\s*=\s*['"][^'"]*['"]/i.test(attrs)) {
         attrs += ' decoding="async"';
       }
       

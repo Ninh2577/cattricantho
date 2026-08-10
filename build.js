@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Force production environment for build pipeline to generate correct robots/indexability
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
 // 1. Foundation & Pipeline Orchestration
 import { Logger } from './utils/logger.js';
 import { ConfigValidator } from './config/validator.js';
@@ -59,7 +62,14 @@ async function runBuildPipeline() {
     // Step 2: Rollback Strategy (Backup)
     RollbackManager.backupDist(SRC_DIR);
 
-    // Ensure dist exists
+    // Ensure dist exists and is empty
+    if (fs.existsSync(DIST_DIR)) {
+      try {
+        fs.rmSync(DIST_DIR, { recursive: true, force: true });
+      } catch (err) {
+        Logger.warning('Orchestrator', 'Không thể xóa hoàn toàn thư mục dist cũ (có thể do file đang lock). Tiếp tục ghi đè...');
+      }
+    }
     if (!fs.existsSync(DIST_DIR)) {
       fs.mkdirSync(DIST_DIR, { recursive: true });
     }
@@ -280,6 +290,9 @@ async function runBuildPipeline() {
     };
 
     htmlFiles.forEach(file => {
+      // Do not copy template pages directly to dist
+      if (['single.html', 'category.html'].includes(file)) return;
+      
       try {
         let content = fs.readFileSync(path.join(pagesDir, file), 'utf8');
         const fileSlug = file.replace('.html', '');
@@ -360,11 +373,19 @@ async function runBuildPipeline() {
                 ? `<img src="${featuredImgUrl}" alt="${article.title}" class="skmd-article-featured-img" style="width:100%;border-radius:var(--radius-md);margin:24px 0;" fetchpriority="high">`
                 : '';
 
+              // Content Integrity Guard
+              const lowerTitle = (article.title || '').toLowerCase();
+              const lowerContent = (article.noiDung?.text || '').toLowerCase();
+              if (lowerTitle.includes('trĩ') && !lowerContent.includes('trĩ') && (lowerContent.includes('bao quy đầu') || lowerContent.includes('phụ khoa'))) {
+                Logger.warning('ContentIntegrity', `CMS ACTION REQUIRED: Mismatch detected in "${article.title}". Title is about Trĩ, but content seems unrelated.`);
+              }
+              
               let rawContent = article.noiDung?.html || '';
               rawContent = HtmlParser.optimizeImages(rawContent);
               
               if (seoConfig.internalLinking && seoConfig.internalLinking.seedKeywords) {
-                rawContent = InternalLinkingEngine.injectContextualLinks(rawContent, seoConfig.internalLinking.seedKeywords);
+                const linkResult = InternalLinkingEngine.injectContextualLinks(rawContent, seoConfig.internalLinking.seedKeywords);
+                rawContent = linkResult.html;
               }
 
               const parsedHtmlData = HtmlParser.parseHeadingsAndInjectIds(rawContent);
@@ -485,6 +506,52 @@ async function runBuildPipeline() {
       Logger.warning('Orchestrator', 'Không thể kết nối Hygraph CMS lúc này. Tiếp tục build với dữ liệu tĩnh.', cmsErr);
     }
 
+    // FINAL REGRESSION AUDIT (HTML Output)
+    Logger.info('Orchestrator', 'Đang thực hiện Final HTML Regression Audit (Canonical, Robots)...');
+    try {
+      // Cleanup any stray templates before audit just to be safe
+      const strayTemplates = ['single.html', 'category.html'];
+      strayTemplates.forEach(t => {
+        const strayPath = path.join(distPagesDir, t);
+        if (fs.existsSync(strayPath)) {
+          try { fs.rmSync(strayPath); } catch (e) {}
+        }
+      });
+
+      const outputFiles = fs.readdirSync(distPagesDir);
+      for (const file of outputFiles) {
+        if (!file.endsWith('.html')) continue;
+        if (file === 'single.html' || file === 'category.html') continue;
+        const htmlContent = fs.readFileSync(path.join(distPagesDir, file), 'utf8');
+        
+        // Check Canonical
+        const canonicalMatch = htmlContent.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i);
+        if (!canonicalMatch) {
+          Logger.warning('Audit', `[${file}] Missing canonical tag!`);
+        } else {
+          const canonicalUrl = canonicalMatch[1];
+          if (!canonicalUrl.startsWith('http')) {
+            Logger.warning('Audit', `[${file}] Canonical URL is not absolute: ${canonicalUrl}`);
+          }
+        }
+        
+        // Check Robots
+        const robotsMatch = htmlContent.match(/<meta\s+name="robots"\s+content="([^"]+)"/i);
+        if (file === '404.html') {
+          if (!robotsMatch || !robotsMatch[1].includes('noindex')) {
+            Logger.warning('Audit', `[404.html] Missing noindex directive!`);
+          }
+        } else if (robotsMatch && robotsMatch[1].includes('noindex')) {
+          if (file !== '404.html') {
+             Logger.warning('Audit', `[${file}] Unexpected noindex found!`);
+          }
+        }
+      }
+      Logger.success('Orchestrator', 'Final HTML Regression Audit hoàn tất.');
+    } catch (auditErr) {
+      Logger.warning('Orchestrator', 'Lỗi khi chạy Final Audit', auditErr);
+    }
+
     // Generate Build Manifest & QA Reports
     buildStats.duration = Date.now() - startTime;
     SecurityManager.generateManifest(DIST_DIR, buildStats);
@@ -497,6 +564,10 @@ async function runBuildPipeline() {
     const allowedCategories = ['tri', 'tri-noi', 'tri-ngoai', 'tri-hon-hop', 'ro-hau-mon'];
     for (const cat of allowedCategories) {
        pagesForSitemap.push({ slug: cat, updatedAt: new Date().toISOString(), title: cat, description: `Danh mục ${cat}` });
+    }
+    const staticPages = ['chinh-sach-bao-mat', 'dieu-khoan', 'kien-thuc', 'lien-he'];
+    for (const page of staticPages) {
+       pagesForSitemap.push({ slug: page, updatedAt: new Date().toISOString(), title: page, description: `Trang ${page}` });
     }
     if (cmsArticles && cmsArticles.length > 0) {
       for (const article of cmsArticles) {
