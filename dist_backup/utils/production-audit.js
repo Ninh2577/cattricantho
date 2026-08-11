@@ -186,33 +186,6 @@ export class ProductionAuditor {
       }
     });
 
-    // CSS and JS Sizes
-    const cssDir = path.join(distDir, 'assets', 'css');
-    if (fs.existsSync(cssDir)) {
-      const cssFiles = fs.readdirSync(cssDir).filter(f => f.endsWith('.css'));
-      cssFiles.forEach(f => {
-        const p = path.join(cssDir, f);
-        stats.performance.cssSize += fs.statSync(p).size;
-      });
-    }
-    const jsDir = path.join(distDir, 'assets', 'js');
-    if (fs.existsSync(jsDir)) {
-      const jsFiles = fs.readdirSync(jsDir).filter(f => f.endsWith('.js'));
-      jsFiles.forEach(f => {
-        const p = path.join(jsDir, f);
-        stats.performance.jsSize += fs.statSync(p).size;
-      });
-    }
-    
-    // Security Headers config (vercel.json)
-    const vercelPath = path.join(distDir, '..', 'vercel.json');
-    if (!fs.existsSync(vercelPath)) {
-      results.SECURITY = 'CRITICAL';
-      stats.critical++;
-    } else {
-      results.SECURITY = 'PASS';
-    }
-
     // Write Report JSON
     const reportsDir = path.join(process.cwd(), 'reports');
     if (!fs.existsSync(reportsDir)) {

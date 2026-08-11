@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/image/:assetId/:filename",
+      "destination": "https://us-west-2.graphassets.com/cmrwmii4g05ix07mv71dx83ti/:assetId"
+    },
+    {
+      "source": "/",
+      "destination": "/pages/index.html"
+    },
+    {
+      "source": "/:slug([^.]+)",
+      "destination": "/pages/:slug.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self' https://*.hygraph.com https://*.google-analytics.com https://*.facebook.net; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com;"
+        }
+      ]
+    }
+  ]
+}

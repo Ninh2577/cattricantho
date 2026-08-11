@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Enterprise Schema QA Report</title>
+  <style>
+    body { font-family: -apple-system, system-ui, sans-serif; background: #f8fafc; color: #1e293b; padding: 40px; }
+    .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    h1 { color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+    .stat-box { display: inline-block; padding: 20px; margin: 10px; border-radius: 8px; color: white; min-width: 150px; text-align: center; }
+    .stat-errors { background: #ef4444; }
+    .stat-warnings { background: #f59e0b; }
+    .stat-success { background: #10b981; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; border: 1px solid #e2e8f0; text-align: left; }
+    th { background: #f1f5f9; }
+    .error-text { color: #ef4444; font-weight: bold; }
+    .warning-text { color: #f59e0b; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Enterprise Medical Schema Platform - QA Dashboard</h1>
+    <div>
+      <div class="stat-box stat-success">
+        <h2>17</h2>
+        <p>Pages Checked</p>
+      </div>
+      <div class="stat-box stat-errors">
+        <h2>31</h2>
+        <p>Critical Errors</p>
+      </div>
+      <div class="stat-box stat-warnings">
+        <h2>13</h2>
+        <p>Warnings</p>
+      </div>
+    </div>
+    
+    <h2>Chi tiết theo trang</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>URL</th>
+          <th>Schemas</th>
+          <th>Status</th>
+          <th>Logs</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/404" target="_blank">https://cattricantho.vercel.app/404</a></td>
+            <td>WebPage</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'isPartOf' trỏ đến 'https://cattricantho.vercel.app/#website' không tồn tại trong @graph.</div><div class="error-text">❌ [https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'about' trỏ đến 'https://cattricantho.vercel.app/#organization' không tồn tại trong @graph.</div>
+              
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/404" target="_blank">https://cattricantho.vercel.app/404</a></td>
+            <td>WebPage</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'isPartOf' trỏ đến 'https://cattricantho.vercel.app/#website' không tồn tại trong @graph.</div><div class="error-text">❌ [https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'about' trỏ đến 'https://cattricantho.vercel.app/#organization' không tồn tại trong @graph.</div>
+              
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/chinh-sach-bao-mat" target="_blank">https://cattricantho.vercel.app/chinh-sach-bao-mat</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/chinh-sach-bao-mat] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/chinh-sach-bao-mat] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/chinh-sach-bao-mat] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/chinh-sach-bao-mat" target="_blank">https://cattricantho.vercel.app/chinh-sach-bao-mat</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/chinh-sach-bao-mat] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/chinh-sach-bao-mat] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/chinh-sach-bao-mat] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/dieu-khoan" target="_blank">https://cattricantho.vercel.app/dieu-khoan</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/dieu-khoan] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/dieu-khoan] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/dieu-khoan] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/dieu-khoan" target="_blank">https://cattricantho.vercel.app/dieu-khoan</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/dieu-khoan] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/dieu-khoan] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/dieu-khoan] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/index" target="_blank">https://cattricantho.vercel.app/index</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/index] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/index" target="_blank">https://cattricantho.vercel.app/index</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/index] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/lien-he" target="_blank">https://cattricantho.vercel.app/lien-he</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/lien-he] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/lien-he] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/lien-he] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/lien-he" target="_blank">https://cattricantho.vercel.app/lien-he</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/lien-he] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/lien-he] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/lien-he] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/phuong-phap-pph-cat-tri" target="_blank">https://cattricantho.vercel.app/phuong-phap-pph-cat-tri</a></td>
+            <td>Organization<br>WebSite<br>ImageObject<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/phuong-phap-pph-cat-tri] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/phuong-phap-pph-cat-tri] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/tri" target="_blank">https://cattricantho.vercel.app/tri</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/tri] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/tri] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/tri] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/tri-noi" target="_blank">https://cattricantho.vercel.app/tri-noi</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/tri-noi] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/tri-noi] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/tri-noi] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/tri-ngoai" target="_blank">https://cattricantho.vercel.app/tri-ngoai</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/tri-ngoai] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/tri-ngoai] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/tri-ngoai] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/tri-hon-hop" target="_blank">https://cattricantho.vercel.app/tri-hon-hop</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/tri-hon-hop] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/tri-hon-hop] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/tri-hon-hop] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/ro-hau-mon" target="_blank">https://cattricantho.vercel.app/ro-hau-mon</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/ro-hau-mon] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/ro-hau-mon] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/ro-hau-mon] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+          <tr>
+            <td><a href="https://cattricantho.vercel.app/kien-thuc" target="_blank">https://cattricantho.vercel.app/kien-thuc</a></td>
+            <td>Organization<br>WebSite<br>WebPage<br>Article, MedicalWebPage<br>BreadcrumbList</td>
+            <td>
+              <span class="error-text">FAIL</span>
+            </td>
+            <td>
+              <div class="error-text">❌ [https://cattricantho.vercel.app/kien-thuc] Article thiếu image (Required by Google)</div><div class="error-text">❌ [https://cattricantho.vercel.app/kien-thuc] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph.</div>
+              <div class="warning-text">⚠️ [https://cattricantho.vercel.app/kien-thuc] Article nên có reviewedBy để tăng E-E-A-T</div>
+            </td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
+    

@@ -14,6 +14,8 @@ import { SecurityManager } from './utils/security.js';
 import { QAReportGenerator } from './utils/qa-report.js';
 import { GeneratorEngine } from './utils/sitemap.js';
 import { HtmlParser } from './utils/html-parser.js';
+import CleanCSS from 'clean-css';
+import { minify as terserMinify } from 'terser';
 
 // 2. Core SEO & Schema Infrastructure
 import { siteConfig } from './config/site.config.js';
@@ -76,26 +78,58 @@ async function runBuildPipeline() {
 
     // Copy assets, config, services, utils to dist
     Logger.info('Orchestrator', 'Đang sao chép static assets...');
-    function copyDir(src, dest) {
+    async function copyDir(src, dest) {
       if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
       const entries = fs.readdirSync(src, { withFileTypes: true });
       for (let entry of entries) {
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dest, entry.name);
         if (entry.isDirectory()) {
-          copyDir(srcPath, destPath);
+          await copyDir(srcPath, destPath);
         } else {
-          fs.copyFileSync(srcPath, destPath);
+          // CSS / JS Minification Logic
+          const ext = path.extname(entry.name).toLowerCase();
+          if (ext === '.css') {
+            try {
+              const cssContent = fs.readFileSync(srcPath, 'utf8');
+              const minified = new CleanCSS({}).minify(cssContent);
+              if (minified.errors && minified.errors.length > 0) {
+                 throw new Error(`CleanCSS Error: ${minified.errors.join(', ')}`);
+              }
+              if (!minified.styles) throw new Error('CleanCSS output is empty');
+              fs.writeFileSync(destPath, minified.styles);
+            } catch (err) {
+              Logger.error('Minification', `Lỗi minify CSS file ${entry.name}:`, err);
+              throw err; // CRITICAL ERROR
+            }
+          } else if (ext === '.js') {
+            try {
+              const jsContent = fs.readFileSync(srcPath, 'utf8');
+              const minified = await terserMinify(jsContent, {
+                 compress: true,
+                 mangle: true,
+                 sourceMap: false
+              });
+              if (!minified.code) throw new Error('Terser output is empty');
+              fs.writeFileSync(destPath, minified.code);
+            } catch (err) {
+              Logger.error('Minification', `Lỗi minify JS file ${entry.name}:`, err);
+              throw err; // CRITICAL ERROR
+            }
+          } else {
+            fs.copyFileSync(srcPath, destPath);
+          }
         }
       }
     }
 
-    ['assets', 'config', 'services', 'utils'].forEach(folder => {
+    // copyDir is now async, so we need a loop to await it
+    for (const folder of ['assets', 'config', 'services', 'utils']) {
       const src = path.join(SRC_DIR, folder);
       if (fs.existsSync(src)) {
-        copyDir(src, path.join(DIST_DIR, folder));
+        await copyDir(src, path.join(DIST_DIR, folder));
       }
-    });
+    }
 
     // Step 3: Load CMS Data & Normalize
     Logger.info('Orchestrator', 'Đang kết nối Hygraph CMS để đồng bộ bài viết tự động...');
@@ -282,6 +316,8 @@ async function runBuildPipeline() {
       errorLogs: []
     };
 
+    const contentIntegrityReports = [];
+    
     const schemaReportData = {
       pagesChecked: 0,
       totalErrors: 0,
@@ -333,6 +369,13 @@ async function runBuildPipeline() {
         if (fs.existsSync(singleTemplatePath)) {
           const singleTemplate = fs.readFileSync(singleTemplatePath, 'utf8');
           
+          // Collect valid URLs for Internal Linking Validation
+          const validUrls = [
+            'index', 'lien-he', 'chinh-sach-bao-mat', 'dieu-khoan',
+            ...Object.keys(articlesByCategory),
+            ...cmsArticles.map(a => a.slug || `bai-viet-${a.id}`)
+          ];
+          
           for (const article of cmsArticles) {
             try {
               const articleSlug = article.slug || `bai-viet-${article.id}`;
@@ -376,16 +419,47 @@ async function runBuildPipeline() {
               // Content Integrity Guard
               const lowerTitle = (article.title || '').toLowerCase();
               const lowerContent = (article.noiDung?.text || '').toLowerCase();
-              if (lowerTitle.includes('trĩ') && !lowerContent.includes('trĩ') && (lowerContent.includes('bao quy đầu') || lowerContent.includes('phụ khoa'))) {
+              let isMismatch = false;
+              let detectedTopics = [];
+              let expectedTopics = [];
+              
+              if (lowerTitle.includes('trĩ')) {
+                 expectedTopics.push('Trĩ');
+                 if (!lowerContent.includes('trĩ') && (lowerContent.includes('bao quy đầu') || lowerContent.includes('phụ khoa'))) {
+                   isMismatch = true;
+                   if (lowerContent.includes('bao quy đầu')) detectedTopics.push('Nam Khoa / Bao Quy Đầu');
+                   if (lowerContent.includes('phụ khoa')) detectedTopics.push('Phụ Khoa');
+                 }
+              }
+              
+              if (isMismatch) {
                 Logger.warning('ContentIntegrity', `CMS ACTION REQUIRED: Mismatch detected in "${article.title}". Title is about Trĩ, but content seems unrelated.`);
+                contentIntegrityReports.push({
+                   url: `/${articleSlug}`,
+                   title: article.title,
+                   expectedTopics: expectedTopics,
+                   detectedTopics: detectedTopics,
+                   severity: 'WARNING',
+                   reason: 'Title contains Trĩ but content lacks Trĩ and mentions unrelated topics.',
+                   recommendation: 'Check CMS and correct article content.'
+                });
               }
               
               let rawContent = article.noiDung?.html || '';
-              rawContent = HtmlParser.optimizeImages(rawContent);
+              rawContent = HtmlParser.optimizeImages(rawContent, article.title);
               
               if (seoConfig.internalLinking && seoConfig.internalLinking.seedKeywords) {
-                const linkResult = InternalLinkingEngine.injectContextualLinks(rawContent, seoConfig.internalLinking.seedKeywords);
+                const linkResult = InternalLinkingEngine.injectContextualLinks(rawContent, seoConfig.internalLinking.seedKeywords, articleSlug, validUrls);
                 rawContent = linkResult.html;
+                
+                // Track internal link stats
+                if (linkResult.stats.selfLinks > 0 || linkResult.stats.brokenLinks > 0 || linkResult.stats.forbiddenContextLinks > 0) {
+                  Logger.error('InternalLinking', `CRITICAL ERROR in ${articleSlug}: Self links: ${linkResult.stats.selfLinks}, Broken: ${linkResult.stats.brokenLinks}, Forbidden Context: ${linkResult.stats.forbiddenContextLinks}`);
+                  // Note: According to rule, this is a CRITICAL ERROR, we might want to fail the build.
+                  // For now, we increment failed stats to trigger exit 1 at the end.
+                  buildStats.failed++;
+                  buildStats.errorLogs.push(`[${articleSlug}] Internal Linking CRITICAL: Self: ${linkResult.stats.selfLinks}, Broken: ${linkResult.stats.brokenLinks}`);
+                }
               }
 
               const parsedHtmlData = HtmlParser.parseHeadingsAndInjectIds(rawContent);
@@ -509,6 +583,16 @@ async function runBuildPipeline() {
     // FINAL REGRESSION AUDIT (HTML Output)
     Logger.info('Orchestrator', 'Đang thực hiện Final HTML Regression Audit (Canonical, Robots)...');
     try {
+      // Save Content Integrity Report
+      const reportsDir = path.join(DIST_DIR, 'reports');
+      if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
+      fs.writeFileSync(path.join(reportsDir, 'content-integrity-report.json'), JSON.stringify({
+         timestamp: new Date().toISOString(),
+         totalChecked: cmsArticles.length,
+         warnings: contentIntegrityReports.length,
+         details: contentIntegrityReports
+      }, null, 2));
+      
       // Cleanup any stray templates before audit just to be safe
       const strayTemplates = ['single.html', 'category.html'];
       strayTemplates.forEach(t => {

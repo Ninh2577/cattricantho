@@ -145,7 +145,7 @@ export class HtmlParser {
     return { html: resultHtml, headings };
   }
 
-  static optimizeImages(html, fallbackAlt = '') {
+  static optimizeImages(html) {
     if (!html) return html;
     
     let isFirstImage = true;
@@ -154,21 +154,8 @@ export class HtmlParser {
     return html.replace(/<img([^>]*)>/gi, (match, p1) => {
       let attrs = p1;
       
-      // Handle alt
-      if (!/alt\s*=\s*['"][^'"]*['"]/i.test(attrs) && fallbackAlt) {
-         // Create a safe, context-aware alt text
-         // Replace quotes to avoid breaking HTML
-         const safeAlt = fallbackAlt.replace(/"/g, '&quot;');
-         attrs += ` alt="Hình ảnh về ${safeAlt}"`;
-      }
-      
-      // Handle LCP (first image) vs Lazy
+      // Check if it's the very first image in the content
       if (isFirstImage) {
-        // Must strip existing loading="lazy" if it exists
-        attrs = attrs.replace(/\bloading\s*=\s*['"]lazy['"]/gi, '');
-        // Strip existing fetchpriority if it exists (so we don't duplicate)
-        attrs = attrs.replace(/\bfetchpriority\s*=\s*['"][^'"]*['"]/gi, '');
-        
         if (!/fetchpriority\s*=\s*['"][^'"]*['"]/i.test(attrs)) {
           attrs += ' fetchpriority="high"';
         }
@@ -177,10 +164,6 @@ export class HtmlParser {
         }
         isFirstImage = false;
       } else {
-        // Strip any improper fetchpriority="high" or loading="eager"
-        attrs = attrs.replace(/\bloading\s*=\s*['"]eager['"]/gi, '');
-        attrs = attrs.replace(/\bfetchpriority\s*=\s*['"]high['"]/gi, '');
-        
         if (!/loading\s*=\s*['"][^'"]*['"]/i.test(attrs)) {
           attrs += ' loading="lazy"';
         }
@@ -189,9 +172,6 @@ export class HtmlParser {
       if (!/decoding\s*=\s*['"][^'"]*['"]/i.test(attrs)) {
         attrs += ' decoding="async"';
       }
-      
-      // Clean up multiple spaces that might have been created
-      attrs = attrs.replace(/\s+/g, ' ');
       
       return `<img${attrs}>`;
     });

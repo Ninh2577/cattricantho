@@ -29,12 +29,10 @@ export class InternalLinkingEngine {
   /**
    * Tiêm (Inject) Contextual Links vào nội dung bài viết một cách an toàn
    * @param {string} content Nội dung HTML của bài viết
-   * @param {Array} keywords Mảng các keyword và link tương ứng
-   * @param {string} currentSlug Slug hiện tại để chống self-link
-   * @param {Array} validSlugs Danh sách URL tồn tại để chống broken-link
+   * @param {Array} keywords Mảng các keyword và link tương ứng [{keyword: 'cắt trĩ', url: '/cat-tri'}]
    * @returns {Object} { html: string, stats: Object }
    */
-  static injectContextualLinks(content, keywords = [], currentSlug = '', validSlugs = []) {
+  static injectContextualLinks(content, keywords = []) {
     if (!content) return { html: content, stats: {} };
     
     let html = '';
@@ -45,14 +43,6 @@ export class InternalLinkingEngine {
     
     let injectedCount = 0;
     let skippedCount = 0;
-    
-    let stats = {
-      injectedLinks: 0,
-      duplicateKeywordLinks: 0,
-      selfLinks: 0,
-      brokenLinks: 0,
-      forbiddenContextLinks: 0
-    };
     
     // Theo dõi keyword đã được gắn chưa (chỉ gắn 1 lần mỗi keyword/bài)
     const usedKeywords = new Set();
@@ -106,33 +96,16 @@ export class InternalLinkingEngine {
     function processTextNode(text) {
       let result = text;
       keywords.forEach(kw => {
-        // Prepare target URL matching
-        let targetSlug = kw.url;
-        if (targetSlug.startsWith('/')) targetSlug = targetSlug.substring(1);
+        if (usedKeywords.has(kw.keyword)) return;
         
-        // Check exact word boundaries
+        // Match exact word boundaries
         const regex = new RegExp(`\\b(${kw.keyword})\\b`, 'i');
+        const match = result.match(regex);
         
-        if (regex.test(result)) {
-           if (usedKeywords.has(kw.keyword)) {
-             stats.duplicateKeywordLinks++;
-             return; // Skip duplicate
-           }
-           
-           if (targetSlug === currentSlug) {
-             stats.selfLinks++;
-             return; // Skip self link
-           }
-           
-           // Verify validSlugs only if we have a list to check against
-           if (validSlugs.length > 0 && !validSlugs.includes(targetSlug) && !validSlugs.includes('/' + targetSlug)) {
-             stats.brokenLinks++;
-             return; // Skip broken link
-           }
-           
-           result = result.replace(regex, `<a href="${kw.url}" class="skmd-internal-link">$1</a>`);
-           usedKeywords.add(kw.keyword);
-           stats.injectedLinks++;
+        if (match) {
+          result = result.replace(regex, `<a href="${kw.url}" class="skmd-internal-link">$1</a>`);
+          usedKeywords.add(kw.keyword);
+          injectedCount++;
         }
       });
       return result;
@@ -140,7 +113,11 @@ export class InternalLinkingEngine {
     
     return {
       html: html,
-      stats: stats
+      stats: {
+        injected: injectedCount,
+        skipped: skippedCount,
+        keywordsUsed: Array.from(usedKeywords)
+      }
     };
   }
 }

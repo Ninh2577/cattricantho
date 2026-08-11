@@ -436,63 +436,6 @@
   
   <script src="/assets/js/core.js" type="module" defer></script>
   
-  <!-- Dynamic TOC & Scrollspy Script -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const content = document.getElementById("skmd-content-html");
-      const tocContainer = document.getElementById("skmd-dynamic-toc");
-      
-      if (!content || !tocContainer) return;
-      
-      const headings = content.querySelectorAll("h2, h3");
-      const tocLinks = tocContainer.querySelectorAll("a");
-      if (headings.length === 0 || tocLinks.length === 0) return;
-      
-      const scrollspyTargets = Array.from(headings);
-      
-      // Smooth scroll with reduced motion support
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      
-      tocLinks.forEach(link => {
-        link.addEventListener("click", function(e) {
-          e.preventDefault();
-          const targetId = this.getAttribute("href").substring(1);
-          const targetElement = document.getElementById(targetId);
-          if (targetElement) {
-            const targetOffset = targetElement.getBoundingClientRect().top + window.scrollY - 100;
-            window.scrollTo({ 
-              top: targetOffset, 
-              behavior: prefersReducedMotion ? 'auto' : 'smooth' 
-            });
-          }
-        });
-      });
-      
-      // Scrollspy
-      window.addEventListener("scroll", function() {
-        const scrollPosition = window.scrollY + 120;
-        let currentHeading = null;
-        
-        scrollspyTargets.forEach((heading) => {
-          if (heading.offsetTop <= scrollPosition) {
-            currentHeading = heading;
-          }
-        });
-        
-        tocLinks.forEach(link => {
-          link.classList.remove("active");
-          link.removeAttribute("aria-current");
-        });
-        
-        if (currentHeading) {
-          const activeLink = tocContainer.querySelector(`a[href="#${currentHeading.id}"]`);
-          if (activeLink) {
-            activeLink.classList.add("active");
-            activeLink.setAttribute("aria-current", "location");
-          }
-        }
-      });
-    });
-  </script>
+
 </body>
 </html>

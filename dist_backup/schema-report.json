@@ -1,0 +1,280 @@
+{
+  "timestamp": "2026-08-10T09:35:38.163Z",
+  "platform": "Enterprise Medical Schema Platform",
+  "summary": {
+    "totalPagesChecked": 17,
+    "totalErrors": 31,
+    "totalWarnings": 13
+  },
+  "details": [
+    {
+      "url": "https://cattricantho.vercel.app/404",
+      "schemas": [
+        "WebPage"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'isPartOf' trỏ đến 'https://cattricantho.vercel.app/#website' không tồn tại trong @graph.",
+        "[https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'about' trỏ đến 'https://cattricantho.vercel.app/#organization' không tồn tại trong @graph."
+      ],
+      "warnings": []
+    },
+    {
+      "url": "https://cattricantho.vercel.app/404",
+      "schemas": [
+        "WebPage"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'isPartOf' trỏ đến 'https://cattricantho.vercel.app/#website' không tồn tại trong @graph.",
+        "[https://cattricantho.vercel.app/404] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'about' trỏ đến 'https://cattricantho.vercel.app/#organization' không tồn tại trong @graph."
+      ],
+      "warnings": []
+    },
+    {
+      "url": "https://cattricantho.vercel.app/chinh-sach-bao-mat",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/chinh-sach-bao-mat] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/chinh-sach-bao-mat] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/chinh-sach-bao-mat] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/chinh-sach-bao-mat",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/chinh-sach-bao-mat] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/chinh-sach-bao-mat] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/chinh-sach-bao-mat] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/dieu-khoan",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/dieu-khoan] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/dieu-khoan] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/dieu-khoan] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/dieu-khoan",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/dieu-khoan] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/dieu-khoan] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/dieu-khoan] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/index",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/index] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": []
+    },
+    {
+      "url": "https://cattricantho.vercel.app/index",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/index] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": []
+    },
+    {
+      "url": "https://cattricantho.vercel.app/lien-he",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/lien-he] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/lien-he] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/lien-he] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/lien-he",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/lien-he] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/lien-he] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/lien-he] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/phuong-phap-pph-cat-tri",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "ImageObject",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/phuong-phap-pph-cat-tri] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/phuong-phap-pph-cat-tri] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/tri",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/tri] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/tri] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/tri] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/tri-noi",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/tri-noi] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/tri-noi] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/tri-noi] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/tri-ngoai",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/tri-ngoai] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/tri-ngoai] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/tri-ngoai] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/tri-hon-hop",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/tri-hon-hop] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/tri-hon-hop] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/tri-hon-hop] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/ro-hau-mon",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/ro-hau-mon] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/ro-hau-mon] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/ro-hau-mon] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    },
+    {
+      "url": "https://cattricantho.vercel.app/kien-thuc",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "WebPage",
+        "Article, MedicalWebPage",
+        "BreadcrumbList"
+      ],
+      "errors": [
+        "[https://cattricantho.vercel.app/kien-thuc] Article thiếu image (Required by Google)",
+        "[https://cattricantho.vercel.app/kien-thuc] GRAPH INTEGRITY ERROR: Tham chiếu mồ côi (dangling @id) tại 'image' trỏ đến 'https://cattricantho.vercel.app/#logo' không tồn tại trong @graph."
+      ],
+      "warnings": [
+        "[https://cattricantho.vercel.app/kien-thuc] Article nên có reviewedBy để tăng E-E-A-T"
+      ]
+    }
+  ]
+}

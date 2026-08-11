@@ -3,7 +3,7 @@
     "pass": 0,
     "fail": 0
   },
-  "timestamp": "2026-08-10T09:35:38.304Z",
+  "timestamp": "2026-08-11T01:55:11.562Z",
   "baseUrl": "https://cattricantho.vercel.app",
   "buildStatus": "VERIFIED",
   "totalPages": 13,
@@ -55,8 +55,8 @@
     "critical": 0
   },
   "performance": {
-    "htmlSize": 248256,
-    "cssSize": 0,
-    "jsSize": 0
+    "htmlSize": 244295,
+    "cssSize": 22291,
+    "jsSize": 3377
   }
 }
